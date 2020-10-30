@@ -16,6 +16,10 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: true
       },
+      ingress_code: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       observation: {
         type: Sequelize.STRING,
         allowNull: false
