@@ -25,4 +25,3 @@ routes.put('/queue', QueueController.update)
 routes.delete('/queue', QueueController.remove)
 
 export default routes
-// git commit -m"adicionado o campo ingress_code na migration"
