@@ -16,8 +16,13 @@ routes.post('/session', SessionController.store)
 
 routes.use(authMiddleware)
 
-// Rotas que precisam estar autenticado com uma Store
+// Rotas que precisam estar autenticado com uma Company
 routes.put('/company', CompanyController.update)
+
+routes.get('/queue', QueueController.list)
 routes.post('/queue', QueueController.store)
+routes.put('/queue', QueueController.update)
+routes.delete('/queue', QueueController.remove)
 
 export default routes
+// git commit -m"adicionado o campo ingress_code na migration"
