@@ -2,35 +2,21 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable('queues', {
+    return queryInterface.createTable('files', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
       },
-      company_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'companies', key: 'id'},
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true
-      },
-      ingress_code: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      observation: {
+      path: {
         type: Sequelize.STRING,
-        allowNull: false
-      },
-      start_time: {
-        type: Sequelize.DATE,
         allowNull: false,
-      },
-      end_time: {
-        type: Sequelize.DATE,
-        allowNull: true
+        unique: true
       },
       created_at: {
         type: Sequelize.DATE,
@@ -39,11 +25,11 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false
-      },
+      }
     })
   },
 
   down: async (queryInterface) => {
-    return queryInterface.dropTable('queues')
+    return queryInterface.dropTable('files')
   }
 }

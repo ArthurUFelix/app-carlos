@@ -5,6 +5,7 @@ class Queue extends Model {
     static init(sequelize) {
         super.init(
             {
+                ingress_code: Sequelize.STRING,
                 observation: Sequelize.STRING,
                 start_time: Sequelize.DATE,
                 end_time: Sequelize.DATE
