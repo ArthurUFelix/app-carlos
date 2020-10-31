@@ -2,21 +2,21 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable('queues', {
+    return queryInterface.createTable('Queues', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
       },
-      company_id: {
+      companyId: {
         type: Sequelize.INTEGER,
-        references: { model: 'companies', key: 'id'},
+        references: { model: 'Companies', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
         allowNull: true
       },
-      ingress_code: {
+      ingressCode: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -24,26 +24,26 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      start_time: {
+      startTime: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
-      end_time: {
+      endTime: {
         type: Sequelize.DATE,
         allowNull: true
       },
-      created_at: {
+      createdAt: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
         allowNull: false
-      },
+      }
     })
   },
 
   down: async (queryInterface) => {
-    return queryInterface.dropTable('queues')
+    return queryInterface.dropTable('Queues')
   }
 }

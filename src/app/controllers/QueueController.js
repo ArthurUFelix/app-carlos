@@ -3,91 +3,87 @@ import Queue from '../models/Queue'
 import * as Yup from 'yup'
 
 class QueueController {
-    async list(req, res) {
-        const queues = await Queue.findAll()
+  async list (req, res) {
+    const queues = await Queue.findAll()
 
-        return res.json({ queues })
+    return res.json({ queues })
+  }
+
+  async store (req, res) {
+    const schema = Yup.object().shape({
+      ingressCode: Yup.string().required(),
+      observation: Yup.string(),
+      companyId: Yup.string(),
+      startTime: Yup.date().required(),
+      endTime: Yup.date().required()
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
     }
 
-    async store(req, res) {
-        const schema = Yup.object().shape({
-            ingress_code: Yup.string().required(),
-            observation: Yup.string(),
-            start_time: Yup.date().required(),
-            end_time: Yup.date().required()
-        })
+    const { companyId } = req.body
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation failed' })
-        }
-
-        const { company_id } = req.body
-
-        if (company_id != req.companyId) {
-            return res.status(401).json({ error: 'Not your company' })
-        }
-
-        /* SÓ DEIXA CRIAR UMA FILA */
-        // const queueExists = await Queue.findOne({ where: { company_id: req.companyId } })
-
-        // if (queueExists) {
-        //     return res.status(400).json({ error: 'Queue has already been created' })
-        // }
-
-        const { id, ingress_code, observation, start_time, end_time } = await Queue.create(req.body)
-        
-        return res.json({
-            id,
-            company_id,
-            ingress_code,
-            observation,
-            start_time,
-            end_time
-        })
+    if (companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot modify another company\'s queue' })
     }
 
-    async update(req, res) {
-        const schema = Yup.object().shape({
-            id: Yup.number().required(),
-            ingress_code: Yup.string(),
-            observation: Yup.string(),
-            start_time: Yup.date(),
-            end_time: Yup.date()
-        })
+    const { id, ingressCode, observation, startTime, endTime } = await Queue.create(req.body)
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation failed' })
-        }
+    return res.json({
+      id,
+      companyId,
+      ingressCode,
+      observation,
+      startTime,
+      endTime
+    })
+  }
 
-        const queue = await Queue.findByPk(req.body.id)
+  async update (req, res) {
+    const schema = Yup.object().shape({
+      companyId: Yup.number().required(),
+      ingressCode: Yup.string(),
+      observation: Yup.string(),
+      startTime: Yup.date(),
+      endTime: Yup.date()
+    })
 
-        const { id, company_id, ingress_code, observation, start_time, end_time } = await queue.update(req.body)
-
-        return res.json({
-            id,
-            company_id,
-            ingress_code,
-            observation,
-            start_time,
-            end_time
-        })
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
     }
 
-    async remove(req, res) {
-        const schema = Yup.object().shape({
-            id: Yup.number().required()
-        })
+    const { companyId } = req.body
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation failed' })
-        }
-        
-        const queue = await Queue.findByPk(req.body.id)
+    const queue = await Queue.findOne({ where: { companyId: req.companyId } })
 
-        await queue.destroy(req.body)
+    const { id, ingressCode, observation, startTime, endTime } = await queue.update(req.body)
 
-        return res.json({ message: "Queue deleted" })
+    return res.json({
+      id,
+      companyId,
+      ingressCode,
+      observation,
+      startTime,
+      endTime
+    })
+  }
+
+  async remove (req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number().required()
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
     }
+
+    const queue = await Queue.findByPk(req.body.id)
+
+    await queue.destroy(req.body)
+
+    return res.json({ message: 'Queue deleted' })
+  }
 }
 
 export default new QueueController()

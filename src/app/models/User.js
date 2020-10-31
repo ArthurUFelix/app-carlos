@@ -1,24 +1,23 @@
-﻿import { Sequelize } from 'sequelize'
 import Sequelize, { Model } from 'sequelize'
 
 class User extends Model {
-    static init(sequelize) {
-        super.init(
-            {
-                name: Sequelize.STRING,
-                phone: Sequelize.STRING
-            },
-            {
-                sequelize
-            }
-        )
+  static init (sequelize) {
+    super.init(
+      {
+        name: Sequelize.STRING,
+        phone: Sequelize.STRING
+      },
+      {
+        sequelize
+      }
+    )
 
-        return this
-    }
+    return this
+  }
 
-    static associate(models) {
-        this.belongsTo(models.Queue, { foreignKey: 'queue_id', as: 'queue' })
-    }
+  static associate (models) {
+    this.belongsTo(models.Queue, { foreignKey: 'queueId' })
+  }
 }
 
 export default User
