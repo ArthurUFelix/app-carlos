@@ -25,8 +25,8 @@ routes.post('/user', wrap(UserController.store))
 routes.use(authMiddleware)
 
 /* Rotas que precisam estar autenticado com uma Company */
-routes.put('/company', authMiddleware, wrap(CompanyController.update))
-routes.delete('/company', authMiddleware, wrap(CompanyController.remove))
+routes.put('/company/:id', authMiddleware, wrap(CompanyController.update))
+routes.delete('/company/:id', authMiddleware, wrap(CompanyController.remove))
 
 routes.post('/queue', wrap(QueueController.store))
 routes.put('/queue', wrap(QueueController.update))

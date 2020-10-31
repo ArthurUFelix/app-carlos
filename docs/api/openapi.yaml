@@ -1,7 +1,6 @@
 openapi: 3.0.0
 info:
   title: KIWI - API REST v1
-  description: ''
   contact: {}
   version: '1.0'
 servers:
@@ -12,11 +11,8 @@ paths:
       tags:
       - Session
       summary: Company authentication
-      description: ''
       operationId: createSession
-      parameters: []
       requestBody:
-        description: ''
         required: true
         content:
           application/json:
@@ -32,11 +28,10 @@ paths:
                   type: string
             example:
               email: company@gmail.com
-              password:  "1234"
+              password:  '1234'
       responses:
         200:
-          description: 'Success'
-          headers: {}
+          description: Success
           content:
             application/json:
               schema:
@@ -54,17 +49,50 @@ paths:
                   token:
                     type: string
         default:
-          description: 'Error'
+          description: Error
   /company:
+    get:
+      tags:
+      - Company
+      summary: List all
+      operationId: getCompanies
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: 
+                      type: integer
+                    name:
+                      type: string
+                    email:
+                      type: string
+              example:
+                [
+                  {
+                    id: 1,
+                    name: Company 1,
+                    email: company1@gmail.com
+                  },
+                  {
+                    id: 2,
+                    name: Company 2,
+                    email: company2@gmail.com
+                  }
+                ]
+        default:
+          description: Error
     post:
       tags:
       - Company
       summary: Create
-      description: ''
       operationId: createCompany
-      parameters: []
       requestBody:
-        description: ''
         required: true
         content:
           application/json:
@@ -84,30 +112,27 @@ paths:
             example:
               name: company
               email: company@gmail.com
-              password: "1234"
+              password: '1234'
       responses:
         200:
           $ref: '#/components/responses/companyResponse'
         default:
-          description: 'Error'
+          description: Error
+  '/company/{id}':
     put:
       tags:
       - Company
       summary: Update
-      description: ''
       operationId: updateCompany
-      parameters: []
+      parameters:
+        - $ref: '#/components/parameters/id'
       requestBody:
-        description: ''
+        required: true
         content:
           application/json:
             schema:
-              required:
-              - id
               type: object
               properties:
-                id:
-                  type: integer
                 name:
                   type: string
                 email:
@@ -121,23 +146,49 @@ paths:
                   type: string
                   description: obrigatório caso preencha o campo `oldPassword`
             example:
-              id: 1
               name: company
               email: company@gmail.com
-              oldPassword: "1234"
-              password: "4321"
-              confirmPassword: "4321"
-        required: true
+              oldPassword: '1234'
+              password: '4321'
+              confirmPassword: '4321'
       responses:
         200:
           $ref: '#/components/responses/companyResponse'
         default:
           description: 'Error'
+    delete:
+      tags:
+      - Company
+      summary: Delete
+      operationId: deleteCompany
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+              example:
+                message: Company deleted
+        default:
+          description: Error
 components:
+  parameters:
+    id:
+      name: id
+      in: path
+      description: Company ID
+      required: true
+      schema:
+        type: integer
   responses:
     companyResponse:
-      description: ''
-      headers: {}
+      description: Success
       content:
         application/json:
           schema:
@@ -149,6 +200,10 @@ components:
                 type: string
               email:
                 type: string
+          example:
+              id: 1
+              name: company
+              email: company@gmail.com
   securitySchemes:
     httpBearer:
       type: http
@@ -157,6 +212,4 @@ security:
 - httpBearer: []
 tags:
 - name: Session
-  description: ''
 - name: Company
-  description: ''

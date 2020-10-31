@@ -3,9 +3,11 @@ import * as Yup from 'yup'
 
 class CompanyController {
   async list (req, res) {
-    const companies = await Company.findAll()
+    const companies = await Company.findAll({
+      attributes: ['id', 'name', 'email']
+    })
 
-    return res.json({ companies })
+    return res.json(companies)
   }
 
   async store (req, res) {
@@ -19,13 +21,15 @@ class CompanyController {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
-    const companyExists = await Company.findOne({ where: { email: req.body.email } })
+    const { email } = req.body
+
+    const companyExists = await Company.findOne({ where: { email } })
 
     if (companyExists) {
       return res.status(400).json({ error: 'Company already exists' })
     }
 
-    const { id, name, email } = await Company.create(req.body)
+    const { id, name } = await Company.create(req.body)
 
     return res.json({
       id,
@@ -36,7 +40,6 @@ class CompanyController {
 
   async update (req, res) {
     const schema = Yup.object().shape({
-      id: Yup.string().required(),
       name: Yup.string(),
       email: Yup.string().email(),
       oldPassword: Yup.string().min(4),
@@ -50,13 +53,15 @@ class CompanyController {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
-    const { id, email, name, oldPassword } = req.body
+    const { name, email, oldPassword } = req.body
 
-    if (req.companyId !== id) {
-      return res.status(400).json({ error: 'Cannot modify other company' })
+    const { id } = req.params
+
+    if (req.companyId !== parseInt(id)) {
+      return res.status(401).json({ error: 'Cannot modify other company' })
     }
 
-    const company = await Company.findByPk(req.companyId)
+    const company = await Company.findByPk(id)
 
     if (oldPassword && !(await company.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Password does not match' })
@@ -72,15 +77,13 @@ class CompanyController {
   }
 
   async remove (req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required()
-    })
+    const { id } = req.params
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' })
+    if (req.companyId !== parseInt(id)) {
+      return res.status(400).json({ error: 'Cannot modify other company' })
     }
 
-    const company = await Company.findByPk(req.body.id)
+    const company = await Company.findByPk(id)
 
     await company.destroy(req.body)
 
