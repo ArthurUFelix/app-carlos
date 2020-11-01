@@ -14,10 +14,6 @@ class User extends Model {
 
     return this
   }
-
-  static associate (models) {
-    this.belongsTo(models.Queue, { foreignKey: 'queueId' })
-  }
 }
 
 export default User

@@ -55,13 +55,17 @@ class CompanyController {
 
     const { name, email, oldPassword } = req.body
 
-    const { id } = req.params
-
-    if (req.companyId !== parseInt(id)) {
-      return res.status(401).json({ error: 'Cannot modify other company' })
-    }
+    const id = parseInt(req.params.id)
 
     const company = await Company.findByPk(id)
+
+    if (!company) {
+      return res.status(404).json({ error: 'Company not found' })
+    }
+
+    if (id !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot modify other Company' })
+    }
 
     if (oldPassword && !(await company.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Password does not match' })
@@ -77,13 +81,17 @@ class CompanyController {
   }
 
   async remove (req, res) {
-    const { id } = req.params
-
-    if (req.companyId !== parseInt(id)) {
-      return res.status(400).json({ error: 'Cannot modify other company' })
-    }
+    const id = parseInt(req.params.id)
 
     const company = await Company.findByPk(id)
+
+    if (!company) {
+      return res.status(404).json({ error: 'Company not found' })
+    }
+
+    if (id !== req.companyId) {
+      return res.status(400).json({ error: 'Cannot modify other Company' })
+    }
 
     await company.destroy(req.body)
 

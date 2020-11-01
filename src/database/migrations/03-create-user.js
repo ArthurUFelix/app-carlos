@@ -9,13 +9,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
-      queueId: {
-        type: Sequelize.INTEGER,
-        references: { model: 'Queues', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true
-      },
       name: {
         type: Sequelize.STRING,
         allowNull: false

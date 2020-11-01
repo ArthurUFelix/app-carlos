@@ -1,19 +1,29 @@
 import Queue from '../models/Queue'
+import { Op } from 'sequelize'
 
 import * as Yup from 'yup'
 
 class QueueController {
   async list (req, res) {
-    const queues = await Queue.findAll()
+    const queues = await Queue.findAll({
+      attributes: [
+        'id',
+        'companyId',
+        'ingressCode',
+        'observation',
+        'startTime',
+        'endTime'
+      ]
+    })
 
-    return res.json({ queues })
+    return res.json(queues)
   }
 
   async store (req, res) {
     const schema = Yup.object().shape({
+      companyId: Yup.number().required(),
       ingressCode: Yup.string().required(),
       observation: Yup.string(),
-      companyId: Yup.string(),
       startTime: Yup.date().required(),
       endTime: Yup.date().required()
     })
@@ -25,7 +35,7 @@ class QueueController {
     const { companyId } = req.body
 
     if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot modify another company\'s queue' })
+      return res.status(401).json({ error: 'Cannot modify another Company' })
     }
 
     const { id, ingressCode, observation, startTime, endTime } = await Queue.create(req.body)
@@ -53,11 +63,21 @@ class QueueController {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
+    const id = parseInt(req.params.id)
+
+    const queue = await Queue.findByPk(id)
+
+    if (!queue) {
+      return res.status(404).json({ error: 'Queue not found' })
+    }
+
     const { companyId } = req.body
 
-    const queue = await Queue.findOne({ where: { companyId: req.companyId } })
+    if (companyId !== req.companyId) {
+      return res.status(400).json({ error: 'Cannot modify another Company\'s queue' })
+    }
 
-    const { id, ingressCode, observation, startTime, endTime } = await queue.update(req.body)
+    const { ingressCode, observation, startTime, endTime } = await queue.update(req.body)
 
     return res.json({
       id,
@@ -70,19 +90,22 @@ class QueueController {
   }
 
   async remove (req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required()
+    const id = parseInt(req.params.id)
+
+    const result = await Queue.destroy({
+      where: {
+        [Op.and]: [
+          { id },
+          { companyId: req.companyId }
+        ]
+      }
     })
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' })
+    if (result) {
+      return res.json({ message: 'Queue deleted' })
+    } else {
+      return res.status(401).json({ error: 'Cannot delete queue' })
     }
-
-    const queue = await Queue.findByPk(req.body.id)
-
-    await queue.destroy(req.body)
-
-    return res.json({ message: 'Queue deleted' })
   }
 }
 

@@ -1,19 +1,22 @@
 import User from '../models/User'
-import Queue from '../models/Queue'
 
 import * as Yup from 'yup'
 
 class UserController {
   async list (req, res) {
-    const users = await User.findAll()
+    const users = await User.findAll({
+      attributes: [
+        'id',
+        'name',
+        'phone'
+      ]
+    })
 
-    return res.json({ users })
+    return res.json(users)
   }
 
   async store (req, res) {
     const schema = Yup.object().shape({
-      queueId: Yup.string().required(),
-      ingressCode: Yup.string().required(),
       name: Yup.string().required(),
       phone: Yup.string().required().min(8)
     })
@@ -22,45 +25,54 @@ class UserController {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
-    const { ingressCode, phone } = req.body
-
-    const userExists = await User.findOne({ where: { phone } })
-
-    if (userExists) {
-      return res.status(400).json({ error: 'Phone number already registered' })
-    }
-
-    const queue = await Queue.findOne({ where: { ingressCode } })
-
-    if (!queue) {
-      return res.status(401).json({ error: 'Ingress code not match' })
-    }
-
-    const { id, queueId, name } = await User.create(req.body)
+    const { id, name, phone } = await User.create(req.body)
 
     return res.json({
       id,
-      queueId,
-      ingressCode,
       name,
       phone
     })
   }
 
-  async remove (req, res) {
+  async update (req, res) {
     const schema = Yup.object().shape({
-      id: Yup.number().required()
+      name: Yup.string(),
+      phone: Yup.string()
     })
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
-    const user = await User.findByPk(req.body.id)
+    const { name, phone } = req.body
 
-    await user.destroy(req.body)
+    const id = parseInt(req.params.id)
 
-    return res.json({ message: 'User deleted' })
+    const user = await User.findByPk(id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    await user.update(req.body)
+
+    return res.json({
+      id,
+      name,
+      phone
+    })
+  }
+
+  async remove (req, res) {
+    const id = parseInt(req.params.id)
+
+    const result = await User.destroy({ where: { id } })
+
+    if (result) {
+      return res.json({ message: 'User deleted' })
+    } else {
+      return res.status(404).json({ error: 'User not found' })
+    }
   }
 }
 
