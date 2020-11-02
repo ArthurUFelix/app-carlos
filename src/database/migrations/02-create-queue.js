@@ -5,9 +5,9 @@ module.exports = {
     return queryInterface.createTable('Queues', {
       id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        allowNull: false
       },
       companyId: {
         type: Sequelize.INTEGER,

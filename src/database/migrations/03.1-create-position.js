@@ -5,9 +5,9 @@ module.exports = {
     return queryInterface.createTable('Positions', {
       id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        allowNull: false
       },
       queueId: {
         type: Sequelize.INTEGER,
@@ -23,15 +23,15 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
-      first: {
-        type: Sequelize.BOOLEAN,
-        allowNull: true
-      },
       next: {
         type: Sequelize.INTEGER,
         references: { model: 'Positions', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+        allowNull: true
+      },
+      first: {
+        type: Sequelize.BOOLEAN,
         allowNull: true
       },
       createdAt: {

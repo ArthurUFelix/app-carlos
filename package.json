@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "nodemon src/server.js",
+    "start:debug": "sucrase-node src/server.js --inspect",
     "lint:fix": "standard --fix"
   },
   "devDependencies": {

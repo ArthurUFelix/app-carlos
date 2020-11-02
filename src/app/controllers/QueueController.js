@@ -1,22 +1,127 @@
-import Queue from '../models/Queue'
 import { Op } from 'sequelize'
+
+import Queue from '../models/Queue'
+import Position from '../models/Position'
 
 import * as Yup from 'yup'
 
 class QueueController {
   async list (req, res) {
-    const queues = await Queue.findAll({
-      attributes: [
-        'id',
-        'companyId',
-        'ingressCode',
-        'observation',
-        'startTime',
-        'endTime'
-      ]
+    const id = parseInt(req.params.queueId)
+
+    const { companyId, ingressCode, observation, startTime, endTime } = await Queue.findByPk(id)
+
+    if (companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot list another Company\'s Queue' })
+    }
+
+    return res.json({
+      id,
+      companyId,
+      ingressCode,
+      observation,
+      startTime,
+      endTime
+    })
+  }
+
+  async listQueueUsers (req, res) {
+    const queueId = parseInt(req.params.queueId)
+
+    const position = await Position.findAll({ where: { queueId } })
+
+    const orderQueue = (queue) => queue.sort((a, b) => {
+      if (a.first) {
+        return -1
+      }
+      if (b.first) {
+        return 1
+      }
+      if (a.next === b.id) {
+        return -1
+      }
+      if (b.next === a.id) {
+        return 1
+      }
+      return 0
     })
 
-    return res.json(queues)
+    const orderedQueue = orderQueue(position)
+
+    const queueWithPosition = orderedQueue.map((element, index) => ({ position: index + 1, ...element.dataValues }))
+
+    return res.json(queueWithPosition)
+  }
+
+  async addUserToQueue (req, res) {
+    const schema = Yup.object().shape({
+      ingressCode: Yup.string().required()
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
+    }
+
+    const userId = parseInt(req.params.userId)
+
+    const userExists = await Position.findOne({ where: { userId } })
+
+    if (userExists) {
+      return res.status(400).json({ error: 'User already registered in Queue' })
+    }
+
+    const { ingressCode } = req.body
+
+    const { id: queueId } = await Queue.findOne({ where: { ingressCode } })
+
+    const lastCreatedPosition = await Position.findOne(
+      {
+        where: { queueId },
+        order: [['createdAt', 'DESC']]
+      }
+    )
+
+    const position = await Position.create({ queueId, userId })
+
+    if (lastCreatedPosition) {
+      await lastCreatedPosition.update({ next: position.id })
+    } else {
+      position.first = true
+      await position.save()
+    }
+
+    return res.json({
+      position
+    })
+  }
+
+  async handleUserFromQueue (req, res) {
+    const companyId = parseInt(req.params.companyId)
+
+    const queue = await Queue.findOne({ where: { companyId } })
+
+    if (companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot handle User with another Company' })
+    }
+
+    const firstPosition = await Position.findOne({
+      where: {
+        [Op.and]: [
+          { queueId: queue.id },
+          { first: true }
+        ]
+      }
+    })
+
+    const nextPosition = await Position.findOne({ where: { id: firstPosition.next } })
+
+    nextPosition.first = true
+
+    await nextPosition.save()
+
+    await firstPosition.destroy()
+
+    return res.json({ message: 'User handled', handledPosition: firstPosition })
   }
 
   async store (req, res) {
@@ -35,7 +140,7 @@ class QueueController {
     const { companyId } = req.body
 
     if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot modify another Company' })
+      return res.status(401).json({ error: 'Cannot create Queue with another Company' })
     }
 
     const { id, ingressCode, observation, startTime, endTime } = await Queue.create(req.body)
@@ -63,7 +168,7 @@ class QueueController {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.queueId)
 
     const queue = await Queue.findByPk(id)
 
@@ -90,7 +195,7 @@ class QueueController {
   }
 
   async remove (req, res) {
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.queueId)
 
     const result = await Queue.destroy({
       where: {
@@ -104,7 +209,7 @@ class QueueController {
     if (result) {
       return res.json({ message: 'Queue deleted' })
     } else {
-      return res.status(401).json({ error: 'Cannot delete queue' })
+      return res.status(401).json({ error: 'Cannot delete Queue' })
     }
   }
 }

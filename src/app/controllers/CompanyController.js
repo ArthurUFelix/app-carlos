@@ -3,11 +3,19 @@ import * as Yup from 'yup'
 
 class CompanyController {
   async list (req, res) {
-    const companies = await Company.findAll({
-      attributes: ['id', 'name', 'email']
-    })
+    const id = parseInt(req.params.companyId)
 
-    return res.json(companies)
+    if (id !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot list another Company' })
+    }
+
+    const { name, email } = await Company.findByPk(id)
+
+    return res.json({
+      id,
+      name,
+      email
+    })
   }
 
   async store (req, res) {
@@ -55,7 +63,7 @@ class CompanyController {
 
     const { name, email, oldPassword } = req.body
 
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.companyId)
 
     const company = await Company.findByPk(id)
 
@@ -81,7 +89,7 @@ class CompanyController {
   }
 
   async remove (req, res) {
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.companyId)
 
     const company = await Company.findByPk(id)
 
@@ -93,9 +101,11 @@ class CompanyController {
       return res.status(400).json({ error: 'Cannot modify other Company' })
     }
 
+    const { name, email } = company
+
     await company.destroy(req.body)
 
-    return res.json({ message: 'Company deleted' })
+    return res.json({ message: 'Company deleted', deletedCompany: { id, name, email } })
   }
 }
 

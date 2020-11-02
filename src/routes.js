@@ -4,7 +4,6 @@ import UserController from './app/controllers/UserController'
 import CompanyController from './app/controllers/CompanyController'
 import QueueController from './app/controllers/QueueController'
 import SessionController from './app/controllers/SessionController'
-import PositionController from './app/controllers/PositionController'
 
 import authMiddleware from './app/middleware/auth'
 import { wrap } from './app/middleware/wrapper'
@@ -14,27 +13,25 @@ const routes = new Router()
 /* Rotas que não precisam de autenticação */
 routes.post('/session', wrap(SessionController.store))
 
-routes.get('/company', wrap(CompanyController.list))
 routes.post('/company', wrap(CompanyController.store))
 
-routes.get('/queue', wrap(QueueController.list))
-
-routes.get('/user', wrap(UserController.list))
+routes.get('/user/:userId', wrap(UserController.list))
+routes.get('/user/queue/:queueId', wrap(QueueController.listQueueUsers))
 routes.post('/user', wrap(UserController.store))
-routes.put('/user/:id', wrap(UserController.update))
-routes.delete('/user/:id', wrap(UserController.remove))
-
-routes.post('/position', wrap(PositionController.store))
+routes.post('/user/:userId', wrap(QueueController.addUserToQueue))
 
 /* Autenticação da Company */
 routes.use(authMiddleware)
 
 /* Rotas que precisam estar autenticado com uma Company */
-routes.put('/company/:id', wrap(CompanyController.update))
-routes.delete('/company/:id', wrap(CompanyController.remove))
+routes.get('/company/:companyId', wrap(CompanyController.list))
+routes.post('/company/:companyId', wrap(QueueController.handleUserFromQueue))
+routes.put('/company/:companyId', wrap(CompanyController.update))
+routes.delete('/company/:companyId', wrap(CompanyController.remove))
 
+routes.get('/queue/:queueId', wrap(QueueController.list))
 routes.post('/queue', wrap(QueueController.store))
-routes.put('/queue/:id', wrap(QueueController.update))
-routes.delete('/queue/:id', wrap(QueueController.remove))
+routes.put('/queue/:queueId', wrap(QueueController.update))
+routes.delete('/queue/:queueId', wrap(QueueController.remove))
 
 export default routes

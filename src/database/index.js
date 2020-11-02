@@ -1,23 +1,23 @@
 import Sequelize from 'sequelize'
 
-import Company from '../app/models/Company'
-import Queue from '../app/models/Queue'
-import User from '../app/models/User'
-import Position from '../app/models/Position'
+import fs from 'fs/promises'
+import path from 'path'
 
 import databaseConfig from '../config/database'
-
-const models = [Company, Queue, User, Position]
 
 class Database {
   constructor () {
     this.init()
   }
 
-  init () {
+  async init () {
     this.connection = new Sequelize(databaseConfig)
 
+    const directoryPath = path.join(__dirname, '../app/models')
+    const models = await fs.readdir(directoryPath)
+
     models
+      .map(model => require(`../app/models/${model}`).default)
       .map(model => model.init(this.connection))
       .map(model => model.associate && model.associate(this.connection.models))
   }
