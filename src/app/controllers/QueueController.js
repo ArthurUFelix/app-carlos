@@ -116,7 +116,7 @@ class QueueController {
     const nextPosition = await Position.findOne({ where: { id: firstPosition.next } })
 
     nextPosition.first = true
-
+    
     await nextPosition.save()
 
     await firstPosition.destroy()
@@ -207,7 +207,7 @@ class QueueController {
     })
 
     if (result) {
-      return res.json({ message: 'Queue deleted' })
+      return res.json({ message: 'Queue deleted', deletedQueueId: id })
     } else {
       return res.status(401).json({ error: 'Cannot delete Queue' })
     }
