@@ -25,7 +25,6 @@ routes.use(authMiddleware)
 
 /* Rotas que precisam estar autenticado com uma Company */
 routes.get('/company/:companyId', wrap(CompanyController.list))
-routes.post('/company/:companyId', wrap(QueueController.handleUserFromQueue))
 routes.put('/company/:companyId', wrap(CompanyController.update))
 routes.delete('/company/:companyId', wrap(CompanyController.remove))
 
@@ -33,5 +32,6 @@ routes.get('/queue/:queueId', wrap(QueueController.list))
 routes.post('/queue', wrap(QueueController.store))
 routes.put('/queue/:queueId', wrap(QueueController.update))
 routes.delete('/queue/:queueId', wrap(QueueController.remove))
+routes.post('/queue/:queueId/user', wrap(QueueController.handleUserFromQueue))
 
 export default routes

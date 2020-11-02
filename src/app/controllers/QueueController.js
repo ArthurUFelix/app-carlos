@@ -96,18 +96,18 @@ class QueueController {
   }
 
   async handleUserFromQueue (req, res) {
-    const companyId = parseInt(req.params.companyId)
+    const queueId = parseInt(req.params.queueId)
 
-    const queue = await Queue.findOne({ where: { companyId } })
+    const queue = await Queue.findOne({ where: { id: queueId } })
 
-    if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot handle User with another Company' })
+    if (!queue || queue.companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot handle User' })
     }
 
     const firstPosition = await Position.findOne({
       where: {
         [Op.and]: [
-          { queueId: queue.id },
+          { queueId },
           { first: true }
         ]
       }

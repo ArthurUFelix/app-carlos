@@ -92,9 +92,9 @@ paths:
     get:
       tags:
       - Company
-      summary: List Company
+      summary: Get Company
       description: Autenticação necessária
-      operationId: getCompanies
+      operationId: getCompany
       parameters:
       - $ref: '#/components/parameters/companyId'
       responses:
@@ -119,56 +119,6 @@ paths:
                 email: dogao@gmail.com
         default:
           description: Error
-    post:
-      tags:
-      - Company
-      summary: Handle User from Queue
-      description: Autenticação necessária
-      operationId: hendleUser
-      parameters: 
-      - $ref: '#/components/parameters/companyId'
-      responses:
-        200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  handledPosition:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      first:
-                        type: boolean
-                        description: Se é a primeira posição
-                      createdAt:
-                        type: string
-                        format: date
-                      updatedAt:
-                        type: string
-                        format: date
-                      queueId:
-                        type: integer
-                      next:
-                        type: integer
-                        description: O id da próxima posição
-                      userId:
-                        type: integer
-                        description: Id do usuário que foi atendido
-              example:
-                message: User handled
-                handledPosition:
-                  id: 21
-                  first: true
-                  createdAt: '2020-11-02T04:22:51.627Z'
-                  updatedAt: '2020-11-02T05:07:15.072Z'
-                  queueId: 1
-                  next: 22
-                  userId: 4
     put:
       tags:
       - Company
@@ -259,8 +209,8 @@ paths:
     get:
       tags: 
       - Queue
-      summary: List Queue
-      operationId: listQueue
+      summary: Get Queue
+      operationId: getQueue
       parameters: 
       - $ref: '#/components/parameters/queueId'
       responses:
@@ -306,6 +256,57 @@ paths:
                 deletedQueueId: 6
         default:
           description: Error
+  '/queue/{queueId}/user':
+    post:
+      tags:
+      - Queue
+      summary: Handle User from Queue
+      description: Atende, ou seja, exclui o User que está na primeira Position de uma Queue que pertence a uma Company
+      operationId: hendleUser
+      parameters: 
+      - $ref: '#/components/parameters/queueId'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  handledPosition:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first:
+                        type: boolean
+                        description: Se é a primeira posição
+                      createdAt:
+                        type: string
+                        format: date
+                      updatedAt:
+                        type: string
+                        format: date
+                      queueId:
+                        type: integer
+                      next:
+                        type: integer
+                        description: O id da próxima posição
+                      userId:
+                        type: integer
+                        description: Id do usuário que foi atendido
+              example:
+                message: User handled
+                handledPosition:
+                  id: 21
+                  first: true
+                  createdAt: '2020-11-02T04:22:51.627Z'
+                  updatedAt: '2020-11-02T05:07:15.072Z'
+                  queueId: 1
+                  next: 22
+                  userId: 4
   '/user':
     post:
       tags:
