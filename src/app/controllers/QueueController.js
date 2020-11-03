@@ -6,13 +6,23 @@ import Position from '../models/Position'
 import * as Yup from 'yup'
 
 class QueueController {
+  async listAll (req, res) {
+    const queues = await Queue.findAll({ where: { companyId: req.companyId } })
+
+    if (!queues.length) {
+      return res.status(400).json({ error: 'Company has no Queues or does not exist' })
+    }
+
+    return res.json(queues)
+  }
+
   async list (req, res) {
     const id = parseInt(req.params.queueId)
 
     const { companyId, ingressCode, observation, startTime, endTime } = await Queue.findByPk(id)
 
     if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot list another Company\'s Queue' })
+      return res.status(401).json({ error: 'Cannot get another Company\'s Queue' })
     }
 
     return res.json({
@@ -49,6 +59,10 @@ class QueueController {
     const orderedQueue = orderQueue(position)
 
     const queueWithPosition = orderedQueue.map((element, index) => ({ position: index + 1, ...element.dataValues }))
+
+    if (!queueWithPosition.length) {
+      return res.status(400).json({ error: 'Queue is empty or does not exist ' })
+    }
 
     return res.json(queueWithPosition)
   }
@@ -116,7 +130,7 @@ class QueueController {
     const nextPosition = await Position.findOne({ where: { id: firstPosition.next } })
 
     nextPosition.first = true
-    
+
     await nextPosition.save()
 
     await firstPosition.destroy()

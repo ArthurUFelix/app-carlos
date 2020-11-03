@@ -28,6 +28,7 @@ routes.get('/company/:companyId', wrap(CompanyController.list))
 routes.put('/company/:companyId', wrap(CompanyController.update))
 routes.delete('/company/:companyId', wrap(CompanyController.remove))
 
+routes.get('/queue', wrap(QueueController.listAll))
 routes.get('/queue/:queueId', wrap(QueueController.list))
 routes.post('/queue', wrap(QueueController.store))
 routes.put('/queue/:queueId', wrap(QueueController.update))

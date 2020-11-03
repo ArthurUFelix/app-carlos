@@ -6,7 +6,7 @@ class CompanyController {
     const id = parseInt(req.params.companyId)
 
     if (id !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot list another Company' })
+      return res.status(401).json({ error: 'Cannot get another Company' })
     }
 
     const { name, email } = await Company.findByPk(id)
