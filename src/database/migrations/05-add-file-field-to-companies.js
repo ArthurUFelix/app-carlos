@@ -1,21 +1,20 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
-      'companies',
-      'file_id',
+      'Companies',
+      'fileId',
       {
         type: Sequelize.INTEGER,
-        references: { model: 'files', key: 'id' },
+        references: { model: 'Files', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-        allowNull: true,
-      });
+        allowNull: true
+      })
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('companies', 'file_id');
-
+    return queryInterface.removeColumn('companies', 'fileId')
   }
-};
+}

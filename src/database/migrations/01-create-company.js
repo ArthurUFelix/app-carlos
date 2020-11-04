@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable('companies', {
+    return queryInterface.createTable('Companies', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -18,15 +18,15 @@ module.exports = {
         allowNull: false,
         unique: true
       },
-      password_hash: {
+      passwordHash: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      created_at: {
+      createdAt: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
         allowNull: false
       }
@@ -34,6 +34,6 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    return queryInterface.dropTable('companies')
+    return queryInterface.dropTable('Companies')
   }
 }

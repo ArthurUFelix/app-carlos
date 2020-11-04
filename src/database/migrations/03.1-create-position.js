@@ -2,35 +2,37 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Queues', {
+    return queryInterface.createTable('Positions', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
       },
-      companyId: {
+      queueId: {
         type: Sequelize.INTEGER,
-        references: { model: 'Companies', key: 'id' },
+        references: { model: 'Queues', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: false
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: false
+      },
+      next: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Positions', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         allowNull: true
       },
-      ingressCode: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      observation: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      startTime: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      endTime: {
-        type: Sequelize.DATE,
-        allowNull: false
+      first: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -44,6 +46,6 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    return queryInterface.dropTable('Queues')
+    return queryInterface.dropTable('Positions')
   }
 }

@@ -1,93 +1,237 @@
+import { Op } from 'sequelize'
+
 import Queue from '../models/Queue'
+import Position from '../models/Position'
 
 import * as Yup from 'yup'
 
 class QueueController {
-    async list(req, res) {
-        const queues = await Queue.findAll()
+  async listAll (req, res) {
+    const queues = await Queue.findAll({ where: { companyId: req.companyId } })
 
-        return res.json({ queues })
+    if (!queues.length) {
+      return res.status(400).json({ error: 'Company has no Queues or does not exist' })
     }
 
-    async store(req, res) {
-        const schema = Yup.object().shape({
-            ingress_code: Yup.string().required(),
-            observation: Yup.string(),
-            start_time: Yup.date().required(),
-            end_time: Yup.date().required()
-        })
+    return res.json(queues)
+  }
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation failed' })
-        }
+  async list (req, res) {
+    const id = parseInt(req.params.queueId)
 
-        const { company_id } = req.body
+    const { companyId, ingressCode, observation, startTime, endTime } = await Queue.findByPk(id)
 
-        if (company_id != req.companyId) {
-            return res.status(401).json({ error: 'Not your company' })
-        }
-
-        /* SÓ DEIXA CRIAR UMA FILA */
-        // const queueExists = await Queue.findOne({ where: { company_id: req.companyId } })
-
-        // if (queueExists) {
-        //     return res.status(400).json({ error: 'Queue has already been created' })
-        // }
-
-        const { id, ingress_code, observation, start_time, end_time } = await Queue.create(req.body)
-        
-        return res.json({
-            id,
-            company_id,
-            ingress_code,
-            observation,
-            start_time,
-            end_time
-        })
+    if (companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot get another Company\'s Queue' })
     }
 
-    async update(req, res) {
-        const schema = Yup.object().shape({
-            id: Yup.number().required(),
-            ingress_code: Yup.string(),
-            observation: Yup.string(),
-            start_time: Yup.date(),
-            end_time: Yup.date()
-        })
+    return res.json({
+      id,
+      companyId,
+      ingressCode,
+      observation,
+      startTime,
+      endTime
+    })
+  }
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation failed' })
-        }
+  async listQueueUsers (req, res) {
+    const queueId = parseInt(req.params.queueId)
 
-        const queue = await Queue.findByPk(req.body.id)
+    const position = await Position.findAll({ where: { queueId } })
 
-        const { id, company_id, ingress_code, observation, start_time, end_time } = await queue.update(req.body)
+    const orderQueue = (queue) => queue.sort((a, b) => {
+      if (a.first) {
+        return -1
+      }
+      if (b.first) {
+        return 1
+      }
+      if (a.next === b.id) {
+        return -1
+      }
+      if (b.next === a.id) {
+        return 1
+      }
+      return 0
+    })
 
-        return res.json({
-            id,
-            company_id,
-            ingress_code,
-            observation,
-            start_time,
-            end_time
-        })
+    const orderedQueue = orderQueue(position)
+
+    const queueWithPosition = orderedQueue.map((element, index) => ({ position: index + 1, ...element.dataValues }))
+
+    if (!queueWithPosition.length) {
+      return res.status(400).json({ error: 'Queue is empty or does not exist ' })
     }
 
-    async remove(req, res) {
-        const schema = Yup.object().shape({
-            id: Yup.number().required()
-        })
+    return res.json(queueWithPosition)
+  }
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation failed' })
-        }
-        
-        const queue = await Queue.findByPk(req.body.id)
+  async addUserToQueue (req, res) {
+    const schema = Yup.object().shape({
+      ingressCode: Yup.string().required()
+    })
 
-        await queue.destroy(req.body)
-
-        return res.json({ message: "Queue deleted" })
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
     }
+
+    const userId = parseInt(req.params.userId)
+
+    const userExists = await Position.findOne({ where: { userId } })
+
+    if (userExists) {
+      return res.status(400).json({ error: 'User already registered in Queue' })
+    }
+
+    const { ingressCode } = req.body
+
+    const { id: queueId } = await Queue.findOne({ where: { ingressCode } })
+
+    const lastCreatedPosition = await Position.findOne(
+      {
+        where: { queueId },
+        order: [['createdAt', 'DESC']]
+      }
+    )
+
+    const position = await Position.create({ queueId, userId })
+
+    if (lastCreatedPosition) {
+      await lastCreatedPosition.update({ next: position.id })
+    } else {
+      position.first = true
+      await position.save()
+    }
+
+    return res.json({
+      position
+    })
+  }
+
+  async handleUserFromQueue (req, res) {
+    const queueId = parseInt(req.params.queueId)
+
+    const queue = await Queue.findOne({ where: { id: queueId } })
+
+    if (!queue || queue.companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot handle User' })
+    }
+
+    const firstPosition = await Position.findOne({
+      where: {
+        [Op.and]: [
+          { queueId },
+          { first: true }
+        ]
+      }
+    })
+
+    const nextPosition = await Position.findOne({ where: { id: firstPosition.next } })
+
+    nextPosition.first = true
+
+    await nextPosition.save()
+
+    await firstPosition.destroy()
+
+    return res.json({ message: 'User handled', handledPosition: firstPosition })
+  }
+
+  async store (req, res) {
+    const schema = Yup.object().shape({
+      companyId: Yup.number().required(),
+      ingressCode: Yup.string().required(),
+      observation: Yup.string(),
+      startTime: Yup.date().required(),
+      endTime: Yup.date().required()
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
+    }
+
+    const { ingressCode, companyId } = req.body
+
+    if (companyId !== req.companyId) {
+      return res.status(401).json({ error: 'Cannot create Queue with another Company' })
+    }
+
+    const ingressCodeExists = await Queue.findOne({ where: { ingressCode } })
+
+    if (ingressCodeExists) {
+      return res.status(400).json({ error: 'Ingress code already in use' })
+    }
+
+    const { id, observation, startTime, endTime } = await Queue.create(req.body)
+
+    return res.json({
+      id,
+      companyId,
+      ingressCode,
+      observation,
+      startTime,
+      endTime
+    })
+  }
+
+  async update (req, res) {
+    const schema = Yup.object().shape({
+      companyId: Yup.number().required(),
+      ingressCode: Yup.string(),
+      observation: Yup.string(),
+      startTime: Yup.date(),
+      endTime: Yup.date()
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' })
+    }
+
+    const id = parseInt(req.params.queueId)
+
+    const queue = await Queue.findByPk(id)
+
+    if (!queue) {
+      return res.status(404).json({ error: 'Queue not found' })
+    }
+
+    const { companyId } = req.body
+
+    if (companyId !== req.companyId) {
+      return res.status(400).json({ error: 'Cannot modify another Company\'s queue' })
+    }
+
+    const { ingressCode, observation, startTime, endTime } = await queue.update(req.body)
+
+    return res.json({
+      id,
+      companyId,
+      ingressCode,
+      observation,
+      startTime,
+      endTime
+    })
+  }
+
+  async remove (req, res) {
+    const id = parseInt(req.params.queueId)
+
+    const result = await Queue.destroy({
+      where: {
+        [Op.and]: [
+          { id },
+          { companyId: req.companyId }
+        ]
+      }
+    })
+
+    if (result) {
+      return res.json({ message: 'Queue deleted', deletedQueueId: id })
+    } else {
+      return res.status(401).json({ error: 'Cannot delete Queue' })
+    }
+  }
 }
 
 export default new QueueController()
