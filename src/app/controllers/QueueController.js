@@ -151,13 +151,19 @@ class QueueController {
       return res.status(400).json({ error: 'Validation failed' })
     }
 
-    const { companyId } = req.body
+    const { ingressCode, companyId } = req.body
 
     if (companyId !== req.companyId) {
       return res.status(401).json({ error: 'Cannot create Queue with another Company' })
     }
 
-    const { id, ingressCode, observation, startTime, endTime } = await Queue.create(req.body)
+    const ingressCodeExists = await Queue.findOne({ where: { ingressCode } })
+
+    if (ingressCodeExists) {
+      return res.status(400).json({ error: 'Ingress code already in use' })
+    }
+
+    const { id, observation, startTime, endTime } = await Queue.create(req.body)
 
     return res.json({
       id,
