@@ -31,7 +31,7 @@ Caso você esqueça de fazer isso, não tem problema, o Pipeline está configura
     branches: [ master, develop ]
 ```
 
-Se o Pipiline falhar, não será possível realizar `merge`.
+Se o Pipeline falhar, não será possível realizar `merge`.
 
 Pull requests precisam ser revisados por um colaborador para serem aprovados.
 
