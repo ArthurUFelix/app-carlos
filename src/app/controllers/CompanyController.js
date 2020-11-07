@@ -2,14 +2,16 @@ import Company from '../models/Company'
 import * as Yup from 'yup'
 
 class CompanyController {
-  async list (req, res) {
+  async get (req, res) {
     const id = parseInt(req.params.companyId)
 
-    if (id !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot get another Company' })
+    const company = await Company.findByPk(id)
+
+    if (!company) {
+      return res.status(404).json({ error: 'Cannot get Company' })
     }
 
-    const { name, email } = await Company.findByPk(id)
+    const { name, email } = company
 
     return res.json({
       id,
