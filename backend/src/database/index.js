@@ -4,11 +4,10 @@ import Company from '../app/models/Company'
 import Queue from '../app/models/Queue'
 import Position from '../app/models/Position'
 import User from '../app/models/User'
-import File from '../app/models/File'
 
 import databaseConfig from '../config/database'
 
-const models = [Company, Queue, Position, User, File]
+const models = [Company, Queue, Position, User]
 
 class Database {
   constructor () {

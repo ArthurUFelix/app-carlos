@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Your info</h2>
+
+    <b>Name</b>
+    <input type="text" id="name">
+
+    <b>Phone</b>
+    <input type="text" id="phone">
+
+    <button type="submit" onclick="register(event)">Register</button>
+
+    <br><br>
+
+    <a href="./landing.html">Back</a>
+</body>
+<script>
+    const register = async (event) => {
+        event.preventDefault()
+
+        const name = document.getElementById('name').value
+        const phone = document.getElementById('phone').value
+
+        const config = {
+            name,
+            phone
+        }
+
+        const response = await api.post('/user', config)
+
+        const user = JSON.stringify(response.data)
+
+        localStorage.setItem('user', user)
+
+        alert(`User registered\nName: ${name}`)
+        
+        window.location.href = './enterQueue.html'
+    }
+</script>
+</html>

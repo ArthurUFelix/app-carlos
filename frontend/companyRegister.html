@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Register your Company</h2>
+
+    <b>Name</b>
+    <input type="text" id="name">
+
+    <b>E-mail</b>
+    <input type="email" id="email">
+
+    <b>Password</b>
+    <input type="password" id="password">
+
+    <button type="submit" onclick="register(event)">Register</button>
+
+    <br><br>
+
+    <a href="./companyLogin.html">Back</a>
+</body>
+<script>
+    const register = async (event) => {
+        event.preventDefault()
+
+        const name = document.getElementById('name').value
+        const email = document.getElementById('email').value
+        const password = document.getElementById('password').value
+
+        const config = {
+            name,
+            email,
+            password
+        }
+
+        const response = await api.post('/company', config)
+
+        alert(`Company registered\nName: ${name}`)
+
+        window.location.href = './companyLogin.html'
+    }
+</script>
+</html>

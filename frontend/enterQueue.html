@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Enter Queue</h2>
+
+    <b>Ingress Code</b>
+    <input type="text" id="ingressCode">
+
+    <button type="submit" onclick="enterQueue(event)">Submit</button>
+
+    <br><br>
+
+    <a onclick="clearInfo(event)">Back</a>
+
+</body>
+<script>
+    const user = JSON.parse(localStorage.getItem('user'))
+
+    const userId = user.id
+
+    const enterQueue = async (event) => {
+        event.preventDefault()
+
+        const ingressCode = document.getElementById('ingressCode').value
+
+        const config = {
+            ingressCode
+        }
+
+        const responseEnterQueue = await api.post(`/user/${userId}`, config)
+
+        alert('Entered in Queue')
+
+        const queueId = responseEnterQueue.data.position.queueId
+
+        localStorage.setItem('queueId', JSON.stringify(queueId))
+
+        window.location.href = './viewQueue.html'
+    }
+
+    const clearInfo = async (event) => {
+        event.preventDefault()
+
+        if (window.confirm("Do you really want to leave?")) {
+            const user = JSON.parse(localStorage.getItem('user'))
+
+            const userId = user.id
+
+            await api.delete(`/user/${userId}`)
+
+            localStorage.clear()
+
+            window.location.href = './userRegister.html'
+        }
+    }
+</script>
+
+</html>

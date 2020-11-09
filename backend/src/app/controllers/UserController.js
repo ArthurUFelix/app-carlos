@@ -39,6 +39,20 @@ class UserController {
       phone
     })
   }
+
+  async remove (res, req) {
+    const id = parseInt(req.params.userId)
+
+    const user = await User.findByPk(id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    await user.destroy(req.body)
+
+    return res.json({ message: 'User deleted' })
+  }
 }
 
 export default new UserController()

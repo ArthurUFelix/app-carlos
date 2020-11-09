@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h1>Manage Queues</h1>
+
+    <b>Ingress Code</b>
+    <input type="text" id="ingressCode">
+
+    <b>Observation</b>
+    <input type="text" id="observation">
+
+    <b>Start Time</b>
+    <input type="date" id="startTime">
+    <b>End Time</b>
+    <input type="date" id="endTime">
+
+    <button type="submit" onclick="createQueue(event)">Create</button>
+
+    <br><br>
+
+    <b>Id</b>
+    <input type="text" id="editQueueId">
+
+    <b>Ingress Code</b>
+    <input type="text" id="editIngressCode">
+
+    <b>Observation</b>
+    <input type="text" id="editObservation">
+
+    <b>Start Time</b>
+    <input type="date" id="editStartTime">
+    <b>End Time</b>
+    <input type="date" id="editEndTime">
+
+    <button type="submit" onclick="editQueue(event)">Edit</button>
+
+    <br><br>
+
+    <b>Id</b>
+    <input type="text" id="deleteQueueId">
+
+    <button type="submit" onclick="deleteQueue(event)">Delete</button>
+
+    <br><br>
+
+    <a href="./dashboard.html">Back</a>
+</body>
+<script>
+    const company = JSON.parse(localStorage.getItem('company'))
+
+    const token = company.token
+
+    api.defaults.headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+    }
+
+    const companyId = company.company.id
+
+    const createQueue = async (event) => {
+        event.preventDefault()
+
+        const ingressCode = document.getElementById('ingressCode').value
+        const observation = document.getElementById('observation').value
+        const startTime = document.getElementById('startTime').value
+        const endTime = document.getElementById('endTime').value
+
+        const config = {
+            companyId,
+            ingressCode,
+            observation,
+            startTime,
+            endTime
+        }
+
+        const response = await api.post('/queue', config)
+
+        alert('Queue created')
+    }
+
+    const editQueue = async (event) => {
+        event.preventDefault()
+
+        const queueId = document.getElementById('editQueueId').value
+        const ingressCode = document.getElementById('editIngressCode').value
+        const observation = document.getElementById('editObservation').value
+        const startTime = document.getElementById('editStartTime').value
+        const endTime = document.getElementById('editEndTime').value
+
+        const config = {
+            companyId,
+            ingressCode,
+            observation,
+            startTime,
+            endTime
+        }
+
+        const response = await api.put(`/queue/${queueId}`, config)
+
+        alert('Queue edited')
+    }
+
+    const deleteQueue = async (event) => {
+        event.preventDefault()
+
+        const queueId = document.getElementById('deleteQueueId').value
+
+        const response = await api.delete(`/queue/${queueId}`)
+
+        alert('Queue deleted')
+    }
+
+
+</script>
+</html>

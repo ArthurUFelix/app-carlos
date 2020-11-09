@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <a  onclick="clearInfo(event)">Back</a>
+
+    <br><br>
+
+    <button onclick="window.location.href=window.location.href">Refresh</button>
+</body>
+<script>
+    const queueId = JSON.parse(localStorage.getItem('queueId'))
+
+    const clearInfo = (event) => {
+        event.preventDefault()
+
+        localStorage.removeItem('queueId')
+
+        window.location.href = './enterQueue.html'
+    }
+
+    api.get(`/user/queue/${queueId}`).then(res => {
+            for (i = 0; i < res.data.length; i++) {
+                const position = res.data[i].position
+
+
+                api.get(`/user/${res.data[i].userId}`).then(res => {
+                    const user =
+                        `<li>
+                    Position: ${position}
+                    <br>
+                    Name: ${res.data.name}
+                </li>`
+                    document.body.insertAdjacentHTML('beforeEnd', `<ul>${user}<ul>`)
+                })
+            }
+        })
+</script>
+
+</html>

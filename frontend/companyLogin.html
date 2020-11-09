@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+</head>
+<body>
+    <h2>Login with your Company</h2>
+
+    <b>E-mail</b>
+    <input type="email" id="email">
+
+    <b>Password</b>
+    <input type="password" id="password">
+
+    <button type="submit" onclick="login(event)">Login</button>
+    <br><br>
+    <a href="./landing.html">Back</a>
+    <a href="./companyRegister.html">Register</a>
+</body>
+<script>
+    const login = async (event) => {
+        event.preventDefault()
+
+        const email = document.getElementById('email').value
+        const password = document.getElementById('password').value
+
+        const config = {
+            email,
+            password
+        }
+
+        const response = await api.post('/session', config)
+
+        const company = JSON.stringify(response.data)
+
+        localStorage.setItem('company', company)
+
+        window.location.href = './dashboard.html'
+    }
+</script>
+</html>

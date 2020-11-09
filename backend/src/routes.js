@@ -22,6 +22,7 @@ routes.get('/user/:userId', wrap(UserController.get))
 routes.get('/user/queue/:queueId', wrap(QueueController.listQueueUsers))
 routes.post('/user', wrap(UserController.store))
 routes.post('/user/:userId', wrap(QueueController.addUserToQueue))
+routes.delete('/user/:userId', wrap(UserController.remove))
 
 /* Autenticação da Company */
 routes.use(authMiddleware)
