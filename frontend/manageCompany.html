@@ -1,15 +1,18 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Document</title>
 </head>
+
 <body>
     <h1>Manage Company</h1>
-    
+
     <b>Name</b>
     <input type="text" id="name">
 
@@ -26,6 +29,10 @@
     <input type="password" id="confirmNewPassword">
 
     <button onclick="editCompany(event)">Edit</button>
+
+    <br><br>
+
+    <button onclick="deleteCompany(event)">Delete your Company</button>
 
     <br><br>
 
@@ -52,17 +59,71 @@
         const password = document.getElementById('newPassword').value
         const confirmPassword = document.getElementById('confirmNewPassword').value
 
-        const config = {
-            name,
-            email,
-            oldPassword,
-            password,
-            confirmPassword
-        }
+        const config = {}
 
-        const response = await api.put(`/company/${companyId}`, config)
+        if (name !== '') config.name = name
+        if (email !== '') config.email = email
+        if (oldPassword !== '') config.oldPassword = oldPassword
+        if (password !== '') config.password = password
+        if (confirmPassword !== '') config.confirmPassword = confirmPassword
 
-        alert('Company edited')
+        await api.put(`/company/${companyId}`, config).then(res => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Company edited',
+                showConfirmButton: true
+            }).then(() => window.location.href = './dashboard.html')
+        }).catch(err => {
+            const { error } = err.response.data
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error,
+                showConfirmButton: true
+            })
+        })
+    }
+
+    const deleteCompany = async (event) => {
+        event.preventDefault()
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                api.delete(`/company/${companyId}`).then(res => {
+                    localStorage.clear()
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Your Company has been deleted.',
+                        'success'
+                    ).then(() => window.location.href = './companyLogin.html')
+                }).catch(err => {
+                    const { error } = err.response.data
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        error,
+                        'error'
+                    )
+                })
+            }
+        })
     }
 </script>
+
 </html>
