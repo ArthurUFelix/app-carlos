@@ -115,11 +115,11 @@
         const endTime = document.getElementById('editEndTime').value
 
         const config = {
-            companyId,
-            ingressCode,
-            observation
+            companyId
         }
 
+        if (ingressCode !== '') config.ingressCode = ingressCode
+        if (observation !== '') config.observation = observation
         if (startTime !== '') config.startTime = startTime
         if (endTime !== '') config.endTime = endTime
 
