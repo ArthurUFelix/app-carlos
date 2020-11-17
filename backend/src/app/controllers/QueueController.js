@@ -2,9 +2,9 @@ import { Op } from 'sequelize'
 
 import Queue from '../models/Queue'
 import Position from '../models/Position'
+import User from '../models/User'
 
 import * as Yup from 'yup'
-import User from '../models/User'
 
 class QueueController {
   async listAll (req, res) {

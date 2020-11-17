@@ -92,17 +92,20 @@
                 showConfirmButton: true
             }).then(() => window.location.href = './dashboard.html')
         }).catch(err => {
+            const { error } = err.response.data
             Swal.fire({
-                position: 'center',
+                position: 'top-right',
                 icon: 'error',
-                title: `${err.response.data.error}`,
-                showConfirmButton: true
+                title: error,
+                showConfirmButton: false,
+                toast: true,
+                timer: 3000
             })
         })
     }
 
-        
-const editQueue = async (event) => {
+
+    const editQueue = async (event) => {
         event.preventDefault()
 
         const queueId = document.getElementById('editQueueId').value
@@ -129,7 +132,7 @@ const editQueue = async (event) => {
                     showConfirmButton: true
                 }).then(() => window.location.href = './dashboard.html')
             }).catch(err => {
-                const error = err.response.data.error
+                const { error } = err.response.data
                 const { statusText } = err.response
                 Swal.fire({
                     position: 'center',
@@ -174,13 +177,14 @@ const editQueue = async (event) => {
                 api.delete(`/queue/${queueId}`).then(res => {
                     swalWithBootstrapButtons.fire(
                         'Deleted!',
-                        'Your file has been deleted.',
+                        'Queue has been deleted.',
                         'success'
                     ).then(() => window.location.href = './dashboard.html')
                 }).catch(err => {
+                    const { error } = err.response.data
                     swalWithBootstrapButtons.fire(
                         'Cancelled',
-                        `${err.response.data.error}`,
+                        error,
                         'error'
                     )
                 })

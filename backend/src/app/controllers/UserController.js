@@ -40,7 +40,7 @@ class UserController {
     })
   }
 
-  async remove (res, req) {
+  async remove (req, res) {
     const id = parseInt(req.params.userId)
 
     const user = await User.findByPk(id)
