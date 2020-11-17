@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Document</title>
 </head>
 
@@ -36,31 +37,65 @@
             ingressCode
         }
 
-        const responseEnterQueue = await api.post(`/user/${userId}`, config)
-
-        alert('Entered in Queue')
-
-        const queueId = responseEnterQueue.data.position.queueId
-
-        localStorage.setItem('queueId', JSON.stringify(queueId))
-
-        window.location.href = './viewQueue.html'
+        await api.post(`/user/${userId}`, config).then(res => {
+            const { queueId } = res.data.position
+            localStorage.setItem('queueId', JSON.stringify(queueId))
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Entered in Queue',
+                showConfirmButton: false,
+                timer: 1200
+            }).then(() => window.location.href = './viewQueue.html')
+        }).catch(err => {
+            const { error } = err.response.data
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error,
+                showConfirmButton: true
+            })
+        })
     }
 
     const clearInfo = async (event) => {
         event.preventDefault()
 
-        if (window.confirm("Do you really want to leave?")) {
-            const user = JSON.parse(localStorage.getItem('user'))
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
 
-            const userId = user.id
-
-            await api.delete(`/user/${userId}`)
-
-            localStorage.clear()
-
-            window.location.href = './userRegister.html'
-        }
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, leave!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                api.delete(`/user/${userId}`).then(res => {
+                    localStorage.clear()
+                    swalWithBootstrapButtons.fire(
+                        'You are out!',
+                        'Left from Queue.',
+                        'success'
+                    ).then(() => window.location.href = './userRegister.html')
+                }).catch(err => {
+                    const { error } = err.response.data
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        error,
+                        'error'
+                    )
+                })
+            }
+        })
     }
 </script>
 

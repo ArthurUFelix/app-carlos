@@ -2,6 +2,7 @@ import { Op } from 'sequelize'
 
 import Queue from '../models/Queue'
 import Position from '../models/Position'
+import User from '../models/User'
 
 import * as Yup from 'yup'
 
@@ -10,7 +11,7 @@ class QueueController {
     const queues = await Queue.findAll({ where: { companyId: req.companyId } })
 
     if (!queues.length) {
-      return res.status(404).json({ error: 'Company has no Queues or does not exist' })
+      return res.status(404).json({ error: 'Company has no Queues' })
     }
 
     return res.json(queues)
@@ -80,6 +81,12 @@ class QueueController {
 
     const userId = parseInt(req.params.userId)
 
+    const userExist = await User.findByPk(userId)
+    
+    if (!userExist) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
     const { ingressCode } = req.body
 
     const queue = await Queue.findOne({ where: { ingressCode } })
@@ -90,7 +97,7 @@ class QueueController {
 
     const { id: queueId } = queue
 
-    const userExists = await Position.findOne({
+    const userInQueue = await Position.findOne({
       where: {
         [Op.and]: [
           { queueId },
@@ -99,7 +106,7 @@ class QueueController {
       }
     })
 
-    if (userExists) {
+    if (userInQueue) {
       return res.status(400).json({ error: 'User already registered in Queue' })
     }
 
@@ -249,7 +256,7 @@ class QueueController {
     if (result) {
       return res.json({ message: 'Queue deleted', deletedQueueId: id })
     } else {
-      return res.status(401).json({ error: 'Cannot delete Queue' })
+      return res.status(400).json({ error: 'Cannot delete Queue' })
     }
   }
 }

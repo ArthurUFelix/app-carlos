@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Document</title>
 </head>
 <body>
@@ -39,11 +40,22 @@
             password
         }
 
-        const response = await api.post('/company', config)
-
-        alert(`Company registered\nName: ${name}`)
-
-        window.location.href = './companyLogin.html'
+        await api.post('/company', config).then(res => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Company registered',
+                showConfirmButton: true
+            }).then(() => window.location.href = './companyLogin.html')
+        }).catch(err => {
+            const { error } = err.response.data
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: error,
+                showConfirmButton: true
+            })
+        })
     }
 </script>
 </html>

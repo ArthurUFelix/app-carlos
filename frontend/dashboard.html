@@ -1,21 +1,23 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Document</title>
 </head>
 <style>
 
 </style>
+
 <body>
     <h2>Dashboard</h2>
     <button onclick="logout(event)">Logout</button>
     <button onclick="manageCompany(event)">Manage Company</button>
     <button onclick="manageQueues(event)">Manage Queues</button>
-    <button onclick="deleteCompany(event)">Delete your Company</button>
     <br><br>
     <h2>Queues</h2>
 </body>
@@ -53,52 +55,84 @@
     const handleUserFromQueue = async (event, queueId) => {
         event.preventDefault()
 
-        const handleResponse = await api.post(`/queue/${queueId}/user`)
-        
-        const { userId } = handleResponse.data.handledPosition
+        await api.post(`/queue/${queueId}/user`).then(res => {
+            const { message } = res.data
+            const { userId } = res.data.handledPosition
 
-        const userResponse = await api.get(`/user/${userId}`)
-
-        const { name, phone } = userResponse.data
-
-        alert(`Handled User:\nName: ${name}\nPhone: ${phone}`)
-    }
-
-    const deleteCompany = async (event) => {
-        event.preventDefault()
-
-        if (window.confirm('Are you sure?')) {
-            await api.delete(`/company/${companyId}`)
-
-            window.location.href = './companyLogin.html'
-        }
+            api.get(`/user/${userId}`).then(res => {
+                const { name, phone } = res.data
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: message,
+                    html: `Name: ${name} <br> Phone: ${phone}`,
+                    showConfirmButton: true
+                })
+            }).catch(err => {
+                const { error } = err.response.data
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'User error:',
+                    text: error,
+                    showConfirmButton: true
+                })
+            })
+        }).catch(err => {
+            const { error } = err.response.data
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Queue error:',
+                text: error,
+                showConfirmButton: true
+            })
+        })
     }
 
     api.get(`/company/${companyId}`).then(res => {
         const company = res.data
         const companyH1 = `<h1>${company.name}</h1><p>${company.email}</p>`
         document.body.insertAdjacentHTML('afterbegin', companyH1)
+    }).catch(err => {
+        const { error } = err.response.data
+        document.body.insertAdjacentHTML('afterbegin', error)
     })
+
+    const formatDate = (fullDate) => {
+        const date = new Date(fullDate)
+
+        const month = date.getMonth() + 1
+        const year = date.getFullYear()
+        const day = date.getDate()
+        const [time] = date.toTimeString().split('G')
+
+        return day + '/' + month + '/' + year + ' às ' + time.substring(0, 5)
+    }
 
     api.get('/queue').then(res => {
         const queues = res.data.reduce(
-            (html, queue) => html + 
-            `<li>
+            (html, queue) => html +
+                `<li>
                 id: ${queue.id}
                 <br>
                 ingress code: ${queue.ingressCode}
                 <br>
                 observation: ${queue.observation}
                 <br>
-                start time: ${queue.startTime}
+                start time: ${formatDate(queue.startTime)}
                 <br>
-                end time: ${queue.endTime}
+                end time: ${formatDate(queue.endTime)}
                 <br>
                 <button onclick="handleUserFromQueue(event, ${queue.id})">Handle user</button>
                 <br><br>
             </li>`, ''
         )
         document.body.insertAdjacentHTML('beforeEnd', `<ul>${queues}</ul>`)
+    }).catch(err => {
+        const { error } = err.response.data
+        document.body.insertAdjacentHTML('beforeEnd', error)
     })
 </script>
+
 </html>
