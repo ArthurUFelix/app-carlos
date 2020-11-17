@@ -3,10 +3,16 @@ import User from '../models/User'
 import * as Yup from 'yup'
 
 class UserController {
-  async list (req, res) {
+  async get (req, res) {
     const id = parseInt(req.params.userId)
 
-    const { name, phone } = await User.findByPk(id)
+    const user = await User.findByPk(id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'Cannot get User' })
+    }
+
+    const { name, phone } = user
 
     return res.json({
       id,

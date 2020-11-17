@@ -10,20 +10,22 @@ class QueueController {
     const queues = await Queue.findAll({ where: { companyId: req.companyId } })
 
     if (!queues.length) {
-      return res.status(400).json({ error: 'Company has no Queues or does not exist' })
+      return res.status(404).json({ error: 'Company has no Queues or does not exist' })
     }
 
     return res.json(queues)
   }
 
-  async list (req, res) {
+  async get (req, res) {
     const id = parseInt(req.params.queueId)
 
-    const { companyId, ingressCode, observation, startTime, endTime } = await Queue.findByPk(id)
+    const queue = await Queue.findByPk(id)
 
-    if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot get another Company\'s Queue' })
+    if (!queue) {
+      return res.status(404).json({ error: 'Cannot get Queue' })
     }
+
+    const { companyId, ingressCode, observation, startTime, endTime } = queue
 
     return res.json({
       id,
@@ -61,7 +63,7 @@ class QueueController {
     const queueWithPosition = orderedQueue.map((element, index) => ({ position: index + 1, ...element.dataValues }))
 
     if (!queueWithPosition.length) {
-      return res.status(400).json({ error: 'Queue is empty or does not exist ' })
+      return res.status(404).json({ error: 'Queue is empty or does not exist ' })
     }
 
     return res.json(queueWithPosition)
@@ -78,15 +80,28 @@ class QueueController {
 
     const userId = parseInt(req.params.userId)
 
-    const userExists = await Position.findOne({ where: { userId } })
+    const { ingressCode } = req.body
+
+    const queue = await Queue.findOne({ where: { ingressCode } })
+
+    if (!queue) {
+      return res.status(404).json({ error: 'Invalid Ingress code or Queue does not exist ' })
+    }
+
+    const { id: queueId } = queue
+
+    const userExists = await Position.findOne({
+      where: {
+        [Op.and]: [
+          { queueId },
+          { userId }
+        ]
+      }
+    })
 
     if (userExists) {
       return res.status(400).json({ error: 'User already registered in Queue' })
     }
-
-    const { ingressCode } = req.body
-
-    const { id: queueId } = await Queue.findOne({ where: { ingressCode } })
 
     const lastCreatedPosition = await Position.findOne(
       {
@@ -127,11 +142,16 @@ class QueueController {
       }
     })
 
+    if (!firstPosition) {
+      return res.status(400).json({ error: 'Queue is empty' })
+    }
+
     const nextPosition = await Position.findOne({ where: { id: firstPosition.next } })
 
-    nextPosition.first = true
-
-    await nextPosition.save()
+    if (nextPosition) {
+      nextPosition.first = true
+      await nextPosition.save()
+    }
 
     await firstPosition.destroy()
 
