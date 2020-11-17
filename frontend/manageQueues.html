@@ -1,12 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Document</title>
 </head>
+
 <body>
     <h1>Manage Queues</h1>
 
@@ -17,29 +20,30 @@
     <input type="text" id="observation">
 
     <b>Start Time</b>
-    <input type="date" id="startTime">
+    <input type="datetime-local" id="startTime">
     <b>End Time</b>
-    <input type="date" id="endTime">
+    <input type="datetime-local" id="endTime">
 
     <button type="submit" onclick="createQueue(event)">Create</button>
 
     <br><br>
+    <div id="editQueue">
+        <b>Id</b>
+        <input type="text" id="editQueueId">
 
-    <b>Id</b>
-    <input type="text" id="editQueueId">
+        <b>Ingress Code</b>
+        <input type="text" id="editIngressCode">
 
-    <b>Ingress Code</b>
-    <input type="text" id="editIngressCode">
+        <b>Observation</b>
+        <input type="text" id="editObservation">
 
-    <b>Observation</b>
-    <input type="text" id="editObservation">
+        <b>Start Time</b>
+        <input type="datetime-local" id="editStartTime">
+        <b>End Time</b>
+        <input type="datetime-local" id="editEndTime">
 
-    <b>Start Time</b>
-    <input type="date" id="editStartTime">
-    <b>End Time</b>
-    <input type="date" id="editEndTime">
-
-    <button type="submit" onclick="editQueue(event)">Edit</button>
+        <button type="submit" onclick="editQueue(event)">Edit</button>
+    </div>
 
     <br><br>
 
@@ -80,12 +84,25 @@
             endTime
         }
 
-        const response = await api.post('/queue', config)
-
-        alert('Queue created')
+        await api.post('/queue', config).then(res => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Queue created',
+                showConfirmButton: true
+            }).then(() => window.location.href = './dashboard.html')
+        }).catch(err => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: `${err.response.data.error}`,
+                showConfirmButton: true
+            })
+        })
     }
 
-    const editQueue = async (event) => {
+        
+const editQueue = async (event) => {
         event.preventDefault()
 
         const queueId = document.getElementById('editQueueId').value
@@ -97,26 +114,79 @@
         const config = {
             companyId,
             ingressCode,
-            observation,
-            startTime,
-            endTime
+            observation
         }
 
-        const response = await api.put(`/queue/${queueId}`, config)
+        if (startTime !== '') config.startTime = startTime
+        if (endTime !== '') config.endTime = endTime
 
-        alert('Queue edited')
+        if (queueId !== '') {
+            await api.put(`/queue/${queueId}`, config).then(res => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Queue edited',
+                    showConfirmButton: true
+                }).then(() => window.location.href = './dashboard.html')
+            }).catch(err => {
+                const error = err.response.data.error
+                const { statusText } = err.response
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: error !== undefined ? error : statusText,
+                    showConfirmButton: true
+                })
+            })
+        } else {
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Please, provide a Id',
+                showConfirmButton: true
+            })
+        }
     }
 
-    const deleteQueue = async (event) => {
+    const deleteQueue = (event) => {
         event.preventDefault()
 
         const queueId = document.getElementById('deleteQueueId').value
 
-        const response = await api.delete(`/queue/${queueId}`)
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
 
-        alert('Queue deleted')
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                api.delete(`/queue/${queueId}`).then(res => {
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    ).then(() => window.location.href = './dashboard.html')
+                }).catch(err => {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        `${err.response.data.error}`,
+                        'error'
+                    )
+                })
+            }
+        })
     }
-
-
 </script>
+
 </html>
