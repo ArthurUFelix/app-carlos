@@ -11,11 +11,23 @@ const editCompany = async (event) => {
 
     if (name !== '') config.name = name
     if (email !== '') config.email = email
-    if (oldPassword !== '') {
+
+    if (oldPassword !== '' && password !== '' && confirmPassword !== '') {
         config.oldPassword = oldPassword
         config.password = password
         config.confirmPassword = confirmPassword
-    } else {
+    }
+
+    if (oldPassword !== '' && (password === '' || confirmPassword === '')) {
+        return Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Insira a nova senha',
+            showConfirmButton: true
+        })
+    }
+
+    if (oldPassword === '' && (password !== '' || confirmPassword !== '')) {
         return Swal.fire({
             position: 'center',
             icon: 'warning',
@@ -66,15 +78,15 @@ const deleteCompany = async (event) => {
             api.delete(`/company/${companyId}`).then(res => {
                 localStorage.clear()
                 swalWithBootstrapButtons.fire(
-                    'Deleted!',
+                    'Deletado!',
                     'Seu perfil foi deletado :(.',
                     'success'
                 ).then(() => window.location.href = './companyLogin.html')
             }).catch(err => {
                 const { error } = err.response.data
                 swalWithBootstrapButtons.fire(
-                    'Cancelled',
                     error,
+                    'Cancelado',
                     'error'
                 )
             })
