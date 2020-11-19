@@ -30,7 +30,7 @@ api.get(`/user/queue/${queueId}`).then(res => {
                 </div>
             </div> 
            `
-            document.body.insertAdjacentHTML('beforeEnd', `<ul>${userInfo}<ul>`)
+            document.body.insertAdjacentHTML('beforeEnd', userInfo)
         }).catch(err => {
             const { error } = err.response.data
             Swal.fire({
@@ -54,3 +54,7 @@ api.get(`/user/queue/${queueId}`).then(res => {
         timer: 3000
     })
 })
+
+const clearInfo = () => {
+    localStorage.removeItem('queueId')
+}

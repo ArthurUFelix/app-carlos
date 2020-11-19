@@ -12,7 +12,7 @@ api
   .get(`/company/${companyId}`)
   .then((res) => {
     const company = res.data;
-    const companyH1 = (
+    const companyHeader = (
       `
       <div class="px-0 bg-warning navbar-wrap mb-2">
         <div class="container">
@@ -45,8 +45,8 @@ api
                         onclick="manageQueues(event)"
                         class="nav-link d-flex align-items-center icon"
                       >
-                        <i class="ion-md-settings"></i>
-                        <span class="profile">Editar fila</span>
+                        <i class="ion-md-albums"></i>
+                        <span class="profile">Filas</span>
                       </a>
                     </li>
                     <li class="nav-item d-flex">
@@ -78,7 +78,7 @@ api
       </div>
       `
     );
-    document.body.insertAdjacentHTML("afterbegin", companyH1);
+    document.body.insertAdjacentHTML("afterbegin", companyHeader);
   })
   .catch((err) => {
     const { error } = err.response.data;

@@ -1,38 +1,38 @@
 const createQueue = async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  const ingressCode = document.getElementById("ingressCode").value;
-  const observation = document.getElementById("observation").value;
-  const startTime = document.getElementById("startTime").value;
-  const endTime = document.getElementById("endTime").value;
+    const ingressCode = document.getElementById("ingressCode").value;
+    const observation = document.getElementById("observation").value;
+    const startTime = document.getElementById("startTime").value;
+    const endTime = document.getElementById("endTime").value;
 
-  const config = {
-    companyId,
-    ingressCode,
-    observation,
-    startTime,
-    endTime,
-  };
-  await api
-    .post("/queue", config)
-    .then((res) => {
-        Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Fila criada com sucesso',
-            showConfirmButton: true
-        }).then(() => window.location.href = './dashboard.html')
-    }).catch(err => {
-        const { error } = err.response.data
-        Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: error,
-            showConfirmButton: false,
-            toast: true,
-            timer: 3000
-      });
-    });
+    const config = {
+        companyId,
+        ingressCode,
+        observation,
+        startTime,
+        endTime,
+    };
+    await api
+        .post("/queue", config)
+        .then((res) => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Fila criada com sucesso',
+                showConfirmButton: true
+            }).then(() => window.location.href = './dashboard.html')
+        }).catch(err => {
+            const { error } = err.response.data
+            Swal.fire({
+                position: 'top-right',
+                icon: 'error',
+                title: error,
+                showConfirmButton: false,
+                toast: true,
+                timer: 3000
+            });
+        });
 };
 
 const editQueue = async (event) => {
@@ -86,16 +86,17 @@ const deleteQueue = (event) => {
 
     const queueId = document.getElementById('deleteQueueId').value
 
-    const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-success',
-            cancelButton: 'btn btn-danger'
-        },
-        buttonsStyling: false
-    })
+    if (queueId !== '') {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
 
-    swalWithBootstrapButtons.fire({
-        title: 'Tem certeza?',
+        swalWithBootstrapButtons.fire({
+            title: 'Tem certeza?',
             text: "Não será possível reverter",
             icon: 'warning',
             showCancelButton: true,
@@ -113,11 +114,19 @@ const deleteQueue = (event) => {
                 }).catch(err => {
                     const { error } = err.response.data
                     swalWithBootstrapButtons.fire(
-                        'Cancelado',
+                        'Cancelado:',
                         error,
-                        'Erro'
-                )
-            })
-        }
-    })
+                        'error'
+                    )
+                })
+            }
+        })
+    } else {
+        return Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Insira o número da fila!',
+            showConfirmButton: true
+        })
+    }
 }

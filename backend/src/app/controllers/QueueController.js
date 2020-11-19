@@ -82,7 +82,7 @@ class QueueController {
     const userId = parseInt(req.params.userId)
 
     const userExist = await User.findByPk(userId)
-    
+
     if (!userExist) {
       return res.status(404).json({ error: 'Usuário não encontrado' })
     }
@@ -107,7 +107,7 @@ class QueueController {
     })
 
     if (userInQueue) {
-      return res.status(400).json({ error: 'User already registered in Queue' })
+      return res.status(400).json({ error: 'Usuário já registrado na fila' })
     }
 
     const lastCreatedPosition = await Position.findOne(
@@ -254,9 +254,9 @@ class QueueController {
     })
 
     if (result) {
-      return res.json({ message: 'Queue deleted', deletedQueueId: id })
+      return res.json({ message: 'Fila deletada', deletedQueueId: id })
     } else {
-      return res.status(400).json({ error: 'Não foi possível deletar a fila' })
+      return res.status(404).json({ error: 'Fila não encontrada' })
     }
   }
 }

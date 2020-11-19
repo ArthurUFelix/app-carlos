@@ -46,12 +46,12 @@ class UserController {
     const user = await User.findByPk(id)
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' })
+      return res.status(404).json({ error: 'Usuário não encontrado' })
     }
 
     await user.destroy(req.body)
 
-    return res.json({ message: 'User deleted' })
+    return res.json({ message: 'Usuário deletado' })
   }
 }
 

@@ -36,7 +36,7 @@ const queueId = JSON.parse(localStorage.getItem('queueId'))
                         </div>
                     </div>                
                 `
-                document.body.insertAdjacentHTML('beforeEnd', `${userInfo}`)
+                document.body.insertAdjacentHTML('beforeEnd', userInfo)
             }).catch(err => {
                 const { error } = err.response.data
                 Swal.fire({
