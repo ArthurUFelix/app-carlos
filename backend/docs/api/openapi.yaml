@@ -466,6 +466,27 @@ paths:
                   next: null
         default:
           description: Error
+    delete:
+      tags:
+      - User
+      summary: Delete User
+      operationId: deleteUser
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Usuário deletado
+        default:
+          description: Error
   '/user/queue/{queueId}':
     get:
       tags:
