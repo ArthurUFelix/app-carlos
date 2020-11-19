@@ -3,7 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/manageQueue.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -11,186 +16,107 @@
 </head>
 
 <body>
-    <h1>Manage Queues</h1>
 
-    <b>Ingress Code</b>
-    <input type="text" id="ingressCode">
+    <section class="ftco-section ftco-section-2 bg-light" id="navigationTabs">
+        <div class="container">
+            <div class="row">
 
-    <b>Observation</b>
-    <input type="text" id="observation">
+                <div class="col-lg-12 mb-5 mb-md-0">
+                    <h1 class="heading-section mb-3">Administre suas filas:</h1>
+                    <div class="tabulation-2">
+                        <ul class="nav nav-pills nav-fill d-md-flex d-block">
+                            <li class="nav-item">
+                                <a class="nav-link py-3 active" data-toggle="tab" href="#home1"><span
+                                        class="ion-ios-add-circle mr-2"></span> Criar uma Fila</a>
+                            </li>
+                            <li class="nav-item px-lg-2">
+                                <a class="nav-link py-3" data-toggle="tab" href="#home2"><span
+                                        class="ion-md-create mr-2"></span> Editar uma fila</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-3" data-toggle="tab" href="#home3"><span
+                                        class="ion-md-trash mr-2"></span> Deletar uma fila</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content rounded mt-2">
+                            <div class="tab-pane container p-4 active" id="home1">
+                                <div class="teste">
+                                    <div>
+                                        <strong>Crie uma senha para sua fila:</strong>
+                                        <input type="text" id="ingressCode">
+                                        <br><br>
+                                        <strong>Observação:</strong>
+                                        <input type="text" id="observation">
+                                        <br><br>
+                                        <strong>Início da fila:</strong>
+                                        <input type="datetime-local" id="startTime">
+                                        <br><br>
+                                        <strong>Término da fila:</strong>
+                                        <input type="datetime-local" id="endTime">
+                                        <br><br>
+                                        <button class="button" type="submit" onclick="createQueue(event)">CRIAR
+                                            FILA</button>
+                                    </div>
+                                    <img src="./assets/create.svg" width="80%">
+                                </div>
 
-    <b>Start Time</b>
-    <input type="datetime-local" id="startTime">
-    <b>End Time</b>
-    <input type="datetime-local" id="endTime">
+                            </div>
 
-    <button type="submit" onclick="createQueue(event)">Create</button>
+                            <div class="tab-pane container p-4 fade" id="home2">
+                                <div class="teste">
+                                    <div>
+                                        <strong>Digite o NÚMERO da fila que você quer editar:</strong>
+                                        <input type="text" id="editQueueId">
+                                        <br><br>
+                                        <strong>Digite uma nova Senha para essa fila:</strong>
+                                        <input type="text" id="editIngressCode">
+                                        <br><br>
+                                        <strong>Alguma observação?</strong>
+                                        <input type="text" id="editObservation">
+                                        <br><br>
+                                        <strong>Quando ínicia a fila?</strong>
+                                        <input type="datetime-local" id="editStartTime">
+                                        <br><br>
+                                        <strong>Quando a fila términa?</strong>
+                                        <input type="datetime-local" id="editEndTime">
+                                        <br><br>
+                                        <button class="button" type="submit" onclick="editQueue(event)">EDITAR
+                                            FILA</button>
+                                    </div>
+                                    <img src="./assets/edit.svg" width="80%">
+                                </div>
+                            </div>
 
-    <br><br>
-    <div id="editQueue">
-        <b>Id</b>
-        <input type="text" id="editQueueId">
+                            <div class="tab-pane container p-4 fade" id="home3">
+                                <div class="teste">
+                                    <div>
+                                        <strong>Digite o NÚMERO da fila que você seja excluir:</strong>
+                                        <input type="text" id="deleteQueueId">
+                                        <br><br>
+                                        <button class="button" type="submit" onclick="deleteQueue(event)">Deletar fila</button>
+                                    </div>
+                                    <img src="./assets/delete.svg" width="80%">
+                                </div>
 
-        <b>Ingress Code</b>
-        <input type="text" id="editIngressCode">
-
-        <b>Observation</b>
-        <input type="text" id="editObservation">
-
-        <b>Start Time</b>
-        <input type="datetime-local" id="editStartTime">
-        <b>End Time</b>
-        <input type="datetime-local" id="editEndTime">
-
-        <button type="submit" onclick="editQueue(event)">Edit</button>
-    </div>
-
-    <br><br>
-
-    <b>Id</b>
-    <input type="text" id="deleteQueueId">
-
-    <button type="submit" onclick="deleteQueue(event)">Delete</button>
-
-    <br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <a href="./dashboard.html">Back</a>
+
 </body>
-<script>
-    const company = JSON.parse(localStorage.getItem('company'))
 
-    const token = company.token
-
-    api.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-    }
-
-    const companyId = company.company.id
-
-    const createQueue = async (event) => {
-        event.preventDefault()
-
-        const ingressCode = document.getElementById('ingressCode').value
-        const observation = document.getElementById('observation').value
-        const startTime = document.getElementById('startTime').value
-        const endTime = document.getElementById('endTime').value
-
-        const config = {
-            companyId,
-            ingressCode,
-            observation,
-            startTime,
-            endTime
-        }
-
-        await api.post('/queue', config).then(res => {
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Queue created',
-                showConfirmButton: true
-            }).then(() => window.location.href = './dashboard.html')
-        }).catch(err => {
-            const { error } = err.response.data
-            Swal.fire({
-                position: 'top-right',
-                icon: 'error',
-                title: error,
-                showConfirmButton: false,
-                toast: true,
-                timer: 3000
-            })
-        })
-    }
-
-
-    const editQueue = async (event) => {
-        event.preventDefault()
-
-        const queueId = document.getElementById('editQueueId').value
-        const ingressCode = document.getElementById('editIngressCode').value
-        const observation = document.getElementById('editObservation').value
-        const startTime = document.getElementById('editStartTime').value
-        const endTime = document.getElementById('editEndTime').value
-
-        const config = {
-            companyId
-        }
-
-        if (ingressCode !== '') config.ingressCode = ingressCode
-        if (observation !== '') config.observation = observation
-        if (startTime !== '') config.startTime = startTime
-        if (endTime !== '') config.endTime = endTime
-
-        if (queueId !== '') {
-            await api.put(`/queue/${queueId}`, config).then(res => {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Queue edited',
-                    showConfirmButton: true
-                }).then(() => window.location.href = './dashboard.html')
-            }).catch(err => {
-                const { error } = err.response.data
-                const { statusText } = err.response
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: error !== undefined ? error : statusText,
-                    showConfirmButton: true
-                })
-            })
-        } else {
-            Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: 'Please, provide a Id',
-                showConfirmButton: true
-            })
-        }
-    }
-
-    const deleteQueue = (event) => {
-        event.preventDefault()
-
-        const queueId = document.getElementById('deleteQueueId').value
-
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-
-        swalWithBootstrapButtons.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                api.delete(`/queue/${queueId}`).then(res => {
-                    swalWithBootstrapButtons.fire(
-                        'Deleted!',
-                        'Queue has been deleted.',
-                        'success'
-                    ).then(() => window.location.href = './dashboard.html')
-                }).catch(err => {
-                    const { error } = err.response.data
-                    swalWithBootstrapButtons.fire(
-                        'Cancelled',
-                        error,
-                        'error'
-                    )
-                })
-            }
-        })
-    }
 </script>
 
+<script src="navBar.js"></script>
+<script src="manageQueue.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate-3.0.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
 </html>

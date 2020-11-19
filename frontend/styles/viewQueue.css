@@ -1,0 +1,52 @@
+body {
+    background-color: #a902c9  !important;
+}
+
+h1 {
+    font-weight: 600 !important;
+    color: #fff !important;
+}
+
+h4 {
+    margin: 2rem !important;
+    color: #fff !important;
+    font-size: 2rem !important;
+    font-family: 'Open Sans';
+}
+
+.contain {
+    background-image: image('./assets/tela.jpg');
+    width: 100vw;
+}
+.list-users {
+    margin: 0 3rem;
+}
+
+.center {
+    justify-items: center;
+    text-align: center;
+    margin: 5rem
+}
+
+.button {
+    font-size: 2rem !important;
+    margin:1rem;
+}
+
+.card {
+    box-shadow: 0 10px 40px 0 rgba(62,57,107,.07), 8px 27px 9px 0 rgba(62,57,107,.06) !important;
+    transition: all 0.5s;
+    background-color: #C6E !important;
+    margin: 2rem;
+}
+
+.card:hover {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
+i {
+    color: #fda925 !important; 
+    font-size: 4rem;
+    font-weight: 600;
+}

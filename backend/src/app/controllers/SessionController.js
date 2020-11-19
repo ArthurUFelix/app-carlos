@@ -12,7 +12,7 @@ class SessionController {
     })
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' })
+      return res.status(400).json({ error: 'Erro de validação' })
     }
 
     const { email, password } = req.body
@@ -20,11 +20,11 @@ class SessionController {
     const company = await Company.findOne({ where: { email } })
 
     if (!company) {
-      return res.status(401).json({ error: 'Company not found' })
+      return res.status(401).json({ error: 'Usuário não encontrado' })
     }
 
     if (!(await company.checkPassword(password))) {
-      return res.status(401).json({ error: 'Password does not match' })
+      return res.status(401).json({ error: 'Senha incorreta' })
     }
 
     const { id, name } = company

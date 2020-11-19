@@ -1,138 +1,37 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="./styles/dashboard.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">  
+    <link rel="stylesheet" href="css/ionicons.min.css">  
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="navBar.js"></script>
+    <script  src="dashboard.js"></script>
+    <title>Dashboard</title>
 </head>
-<style>
+<body> 
 
-</style>
+    <div class="center"> 
+        <form id="form-view-queue" > 
+            <input type="text" class="search" id="queueId" required placeholder="Insira o número da fila" />  
+            <button class="button" type="submit" onclick="viewQueue(event)">Ver </button>  
+            <button class="button" onclick="userRegister(event)">Cadastrar cliente <i class="ion-ios-add-circle"></i></button> 
+        </form>      
+    </div>   
 
-<body>
-    <h2>Dashboard</h2>
-    <button onclick="logout(event)">Logout</button>
-    <button onclick="manageCompany(event)">Manage Company</button>
-    <button onclick="manageQueues(event)">Manage Queues</button>
-    <br><br>
-    <h2>Queues</h2>
+
 </body>
-<script>
-    const company = JSON.parse(localStorage.getItem('company'))
-
-    const token = company.token
-    const companyId = company.company.id
-
-    api.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-    }
-
-    const logout = (event) => {
-        event.preventDefault()
-
-        localStorage.clear('company')
-
-        window.location.href = './companyLogin.html'
-    }
-
-    const manageCompany = (event) => {
-        event.preventDefault()
-
-        window.location.href = './manageCompany.html'
-    }
-
-    const manageQueues = (event) => {
-        event.preventDefault()
-
-        window.location.href = './manageQueues.html'
-    }
-
-    const handleUserFromQueue = async (event, queueId) => {
-        event.preventDefault()
-
-        await api.post(`/queue/${queueId}/user`).then(res => {
-            const { message } = res.data
-            const { userId } = res.data.handledPosition
-
-            api.get(`/user/${userId}`).then(res => {
-                const { name, phone } = res.data
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: message,
-                    html: `Name: ${name} <br> Phone: ${phone}`,
-                    showConfirmButton: true
-                })
-            }).catch(err => {
-                const { error } = err.response.data
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'User error:',
-                    text: error,
-                    showConfirmButton: true
-                })
-            })
-        }).catch(err => {
-            const { error } = err.response.data
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Queue error:',
-                text: error,
-                showConfirmButton: true
-            })
-        })
-    }
-
-    api.get(`/company/${companyId}`).then(res => {
-        const company = res.data
-        const companyH1 = `<h1>${company.name}</h1><p>${company.email}</p>`
-        document.body.insertAdjacentHTML('afterbegin', companyH1)
-    }).catch(err => {
-        const { error } = err.response.data
-        document.body.insertAdjacentHTML('afterbegin', error)
-    })
-
-    const formatDate = (fullDate) => {
-        const date = new Date(fullDate)
-
-        const month = date.getMonth() + 1
-        const year = date.getFullYear()
-        const day = date.getDate()
-        const [time] = date.toTimeString().split('G')
-
-        return day + '/' + month + '/' + year + ' às ' + time.substring(0, 5)
-    }
-
-    api.get('/queue').then(res => {
-        const queues = res.data.reduce(
-            (html, queue) => html +
-                `<li>
-                id: ${queue.id}
-                <br>
-                ingress code: ${queue.ingressCode}
-                <br>
-                observation: ${queue.observation}
-                <br>
-                start time: ${formatDate(queue.startTime)}
-                <br>
-                end time: ${formatDate(queue.endTime)}
-                <br>
-                <button onclick="handleUserFromQueue(event, ${queue.id})">Handle user</button>
-                <br><br>
-            </li>`, ''
-        )
-        document.body.insertAdjacentHTML('beforeEnd', `<ul>${queues}</ul>`)
-    }).catch(err => {
-        const { error } = err.response.data
-        document.body.insertAdjacentHTML('beforeEnd', error)
-    })
-</script>
-
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate-3.0.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.easing.1.3.js"></script>
+<script src="js/main.js"></script>
 </html>

@@ -3,7 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./styles/viewQueue.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+   
+    <link rel="stylesheet" href="./styles/userRegister.css">
+    <link rel="stylesheet" href="css/aos.css">
+
+    <link rel="stylesheet" href="css/ionicons.min.css">
+
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="css/nouislider.css">
+
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -11,59 +26,34 @@
 </head>
 
 <body>
-    <a onclick="clearInfo(event)">Back</a>
+    <section class="contain">
+        <div class="center">
+            <img src="./assets/teste.jpg" style="text-align: center;">
+            <div>
+                <button class="button" onclick="clearInfo(event)">Back</button>
+                <button class="button" onclick="window.location.href=window.location.href">Refresh</button>
+            </div>
+            
+        </div>
+    </section>
 
-    <br><br>
 
-    <button onclick="window.location.href=window.location.href">Refresh</button>
 </body>
-<script>
-    const queueId = JSON.parse(localStorage.getItem('queueId'))
+<script src="viewQueue.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate-3.0.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.easing.1.3.js"></script>
+<script src="js/jquery.waypoints.min.js"></script>
+<script src="js/jquery.stellar.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/aos.js"></script>
 
-    const clearInfo = (event) => {
-        event.preventDefault()
-
-        localStorage.removeItem('queueId')
-
-        window.location.href = './enterQueue.html'
-    }
-
-    api.get(`/user/queue/${queueId}`).then(res => {
-        for (i = 0; i < res.data.length; i++) {
-            const { position, userId } = res.data[i]
-
-            api.get(`/user/${userId}`).then(res => {
-                const { name } = res.data
-                const userInfo =
-                    `<li>
-                    Position: ${position}
-                    <br>
-                    Name: ${name}
-                </li>`
-                document.body.insertAdjacentHTML('beforeEnd', `<ul>${userInfo}<ul>`)
-            }).catch(err => {
-                const { error } = err.response.data
-                Swal.fire({
-                    position: 'top-right',
-                    icon: 'error',
-                    title: error,
-                    toast: true,
-                    showConfirmButton: false,
-                    timer: 3000
-                })
-            })
-        }
-    }).catch(err => {
-        const { error } = err.response.data
-        Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: error,
-            toast: true,
-            showConfirmButton: false,
-            timer: 3000
-        })
-    })
-</script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/moment-with-locales.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script src="js/main.js"></script>
 
 </html>

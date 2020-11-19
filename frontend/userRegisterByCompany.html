@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="./styles/companyLogin.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    
+    <title>Adicionar cliente</title>
+</head>
+
+<body>
+    <section class="ftco-section ftco-section-2 section-signup page-header img"
+    style="background-image: url(assets/tela.png);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                <div class="card card-login py-4">
+                    <form class="form-login" method="" action="">
+                        <div class="card-header card-header-primary text-center">
+                            <h4 class="card-title">Adicionar cliente</h4>
+                            <div class="social-line">
+                                <img src="./assets/logo.png" width="50%"/>
+                            </div>
+                        </div>
+                        <div class="card-body px-4 pb-4 pt-2">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="ion-ios-contact"></i>
+                                    </span>
+                                </div>
+                                <input type="text" id="name" class="form-control" required placeholder="Nome do Cliente:">
+                            </div>
+                            
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="ion-ios-chatboxes"></i>
+                                    </span>
+                                </div>
+                                <input type="text" id="phone" class="form-control" required  placeholder="Celular do Cliente:">
+                            </div>
+                            <br>
+                            <div class="footer text-center">
+                                <a href="#" class="button" type="submit" onclick="register(event)">Entrar</a>
+                                <a href="./dashboard.html" class="button"> Back</a>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+<script src="userRegisterByCompany.js"></script>
+</html>

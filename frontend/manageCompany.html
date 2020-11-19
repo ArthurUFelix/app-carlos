@@ -3,127 +3,114 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/manageCompany.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="./axios.js"></script>
     <script src="./api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Document</title>
+    <title>Editar Perfil</title>
 </head>
 
 <body>
-    <h1>Manage Company</h1>
 
-    <b>Name</b>
-    <input type="text" id="name">
+    <!-- <button onclick="deleteCompany(event)">Delete your Company</button>
 
-    <b>E-mail</b>
-    <input type="email" id="email">
+    <a href="./dashboard.html">Back</a> -->
+    
+    <section class="ftco-section ftco-section-2 section-signup page-header img"
+        style="background-image: url(assets/background.jpg);">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8 mb-8">
+                    <div class="card card-login">
+                        <div class="card-header card-header-primary text-center">
+                            <h4 class="card-title">Edite seus dados :)</h4>
+                            <div class="image-wrap">
+                                <img src="assets/profile.svg" alt="Thumbnail Image"
+                                    class="img-raised rounded-circle thumbnail img-fluid image">
+                            </div>
+                            <br>
+                            <form class="form-login" method="" action="">
+                                <div class="card-body px-4 pb-4 pt-2">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="ion-ios-contact"></i>
+                                            </span>
+                                        </div>
+                                        <input input type="text" id="name" class="form-control"
+                                            placeholder="Digite seu novo nome:">
+                                    </div>
 
-    <b>Old Password</b>
-    <input type="password" id="oldPassword">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="ion-ios-mail"></i>
+                                            </span>
+                                        </div>
+                                        <input type="email" id="email" class="form-control"
+                                            placeholder="Digite seu novo email:">
+                                    </div>
 
-    <b>New Password</b>
-    <input type="password" id="newPassword">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="ion-ios-lock"></i>
+                                            </span>
+                                        </div>
+                                        <input type="password" id="oldPassword" class="form-control"
+                                            placeholder="Digite sua senha atual:">
+                                    </div>
 
-    <b>Confirm new Password</b>
-    <input type="password" id="confirmNewPassword">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="ion-md-create"></i>
+                                            </span>
+                                        </div>
+                                        <input type="password" id="newPassword" class="form-control"
+                                            placeholder="Digite sua nova senha:">
+                                    </div>
 
-    <button onclick="editCompany(event)">Edit</button>
 
-    <br><br>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="ion-ios-checkmark-circle"></i>
+                                            </span>
+                                        </div>
+                                        <input type="password" id="confirmPassword" class="form-control"
+                                            placeholder="Confirme sua nova senha:">
+                                    </div>
 
-    <button onclick="deleteCompany(event)">Delete your Company</button>
+                                    <br>
+                                    <div class="footer text-center">
+                                        <a href="#" class="button" type="submit" onclick="editCompany(event)">SALVAR</a>
 
-    <br><br>
+                                        <a class="button" href="./dashboard.html">VOLTAR</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <a href="./dashboard.html">Back</a>
+
 </body>
-<script>
-    const company = JSON.parse(localStorage.getItem('company'))
 
-    const token = company.token
-
-    const companyId = company.company.id
-
-    api.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-    }
-
-    const editCompany = async (event) => {
-        event.preventDefault()
-
-        const name = document.getElementById('name').value
-        const email = document.getElementById('email').value
-        const oldPassword = document.getElementById('oldPassword').value
-        const password = document.getElementById('newPassword').value
-        const confirmPassword = document.getElementById('confirmNewPassword').value
-
-        const config = {}
-
-        if (name !== '') config.name = name
-        if (email !== '') config.email = email
-        if (oldPassword !== '') config.oldPassword = oldPassword
-        if (password !== '') config.password = password
-        if (confirmPassword !== '') config.confirmPassword = confirmPassword
-
-        await api.put(`/company/${companyId}`, config).then(res => {
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Company edited',
-                showConfirmButton: true
-            }).then(() => window.location.href = './dashboard.html')
-        }).catch(err => {
-            const { error } = err.response.data
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: error,
-                showConfirmButton: true
-            })
-        })
-    }
-
-    const deleteCompany = async (event) => {
-        event.preventDefault()
-
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-
-        swalWithBootstrapButtons.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                api.delete(`/company/${companyId}`).then(res => {
-                    localStorage.clear()
-                    swalWithBootstrapButtons.fire(
-                        'Deleted!',
-                        'Your Company has been deleted.',
-                        'success'
-                    ).then(() => window.location.href = './companyLogin.html')
-                }).catch(err => {
-                    const { error } = err.response.data
-                    swalWithBootstrapButtons.fire(
-                        'Cancelled',
-                        error,
-                        'error'
-                    )
-                })
-            }
-        })
-    }
-</script>
-
+<script src="navBar.js"></script>
+<script  src="manageCompany.js"></script>
+<script  src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate-3.0.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
 </html>

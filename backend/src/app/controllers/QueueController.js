@@ -11,7 +11,7 @@ class QueueController {
     const queues = await Queue.findAll({ where: { companyId: req.companyId } })
 
     if (!queues.length) {
-      return res.status(404).json({ error: 'Company has no Queues' })
+      return res.status(404).json({ error: 'Nenhuma fila ativa no momento.' })
     }
 
     return res.json(queues)
@@ -23,7 +23,7 @@ class QueueController {
     const queue = await Queue.findByPk(id)
 
     if (!queue) {
-      return res.status(404).json({ error: 'Cannot get Queue' })
+      return res.status(404).json({ error: 'Fila não encontrada' })
     }
 
     const { companyId, ingressCode, observation, startTime, endTime } = queue
@@ -64,7 +64,7 @@ class QueueController {
     const queueWithPosition = orderedQueue.map((element, index) => ({ position: index + 1, ...element.dataValues }))
 
     if (!queueWithPosition.length) {
-      return res.status(404).json({ error: 'Queue is empty or does not exist ' })
+      return res.status(404).json({ error: 'A fila está vazia ou não foi cadastrada!' })
     }
 
     return res.json(queueWithPosition)
@@ -76,7 +76,7 @@ class QueueController {
     })
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' })
+      return res.status(400).json({ error: 'Erro de validação' })
     }
 
     const userId = parseInt(req.params.userId)
@@ -84,7 +84,7 @@ class QueueController {
     const userExist = await User.findByPk(userId)
     
     if (!userExist) {
-      return res.status(404).json({ error: 'User not found' })
+      return res.status(404).json({ error: 'Usuário não encontrado' })
     }
 
     const { ingressCode } = req.body
@@ -92,7 +92,7 @@ class QueueController {
     const queue = await Queue.findOne({ where: { ingressCode } })
 
     if (!queue) {
-      return res.status(404).json({ error: 'Invalid Ingress code or Queue does not exist ' })
+      return res.status(404).json({ error: 'Código inválido' })
     }
 
     const { id: queueId } = queue
@@ -137,7 +137,7 @@ class QueueController {
     const queue = await Queue.findOne({ where: { id: queueId } })
 
     if (!queue || queue.companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot handle User' })
+      return res.status(401).json({ error: 'Não foi possível chamar o cliente' })
     }
 
     const firstPosition = await Position.findOne({
@@ -150,7 +150,7 @@ class QueueController {
     })
 
     if (!firstPosition) {
-      return res.status(400).json({ error: 'Queue is empty' })
+      return res.status(400).json({ error: 'A fila está vazia!' })
     }
 
     const nextPosition = await Position.findOne({ where: { id: firstPosition.next } })
@@ -162,7 +162,7 @@ class QueueController {
 
     await firstPosition.destroy()
 
-    return res.json({ message: 'User handled', handledPosition: firstPosition })
+    return res.json({ message: 'Usuário chamado!', handledPosition: firstPosition })
   }
 
   async store (req, res) {
@@ -175,19 +175,19 @@ class QueueController {
     })
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' })
+      return res.status(400).json({ error: 'Erro de validação' })
     }
 
     const { ingressCode, companyId } = req.body
 
     if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Cannot create Queue with another Company' })
+      return res.status(401).json({ error: 'Não é possível criar fila' })
     }
 
     const ingressCodeExists = await Queue.findOne({ where: { ingressCode } })
 
     if (ingressCodeExists) {
-      return res.status(400).json({ error: 'Ingress code already in use' })
+      return res.status(400).json({ error: 'Este código já está em uso' })
     }
 
     const { id, observation, startTime, endTime } = await Queue.create(req.body)
@@ -212,7 +212,7 @@ class QueueController {
     })
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' })
+      return res.status(400).json({ error: 'Erro de validação' })
     }
 
     const id = parseInt(req.params.queueId)
@@ -220,13 +220,13 @@ class QueueController {
     const queue = await Queue.findByPk(id)
 
     if (!queue) {
-      return res.status(404).json({ error: 'Queue not found' })
+      return res.status(404).json({ error: 'Fila não encontrada' })
     }
 
     const { companyId } = req.body
 
     if (companyId !== req.companyId) {
-      return res.status(400).json({ error: 'Cannot modify another Company\'s queue' })
+      return res.status(400).json({ error: 'Não é possível editar a fila' })
     }
 
     const { ingressCode, observation, startTime, endTime } = await queue.update(req.body)
@@ -256,7 +256,7 @@ class QueueController {
     if (result) {
       return res.json({ message: 'Queue deleted', deletedQueueId: id })
     } else {
-      return res.status(400).json({ error: 'Cannot delete Queue' })
+      return res.status(400).json({ error: 'Não foi possível deletar a fila' })
     }
   }
 }

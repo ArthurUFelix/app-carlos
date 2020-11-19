@@ -355,7 +355,7 @@ paths:
                         type: integer
                         description: Id do usuário que foi atendido
               example:
-                message: User handled
+                message: Usuário foi chamado
                 handledPosition:
                   id: 21
                   first: true
