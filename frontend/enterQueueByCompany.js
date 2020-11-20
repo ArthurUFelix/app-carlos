@@ -20,7 +20,7 @@ const enterQueue = async (event) => {
             title: 'Cliente inserido na fila',
             showConfirmButton: false,
             timer: 1200
-        })
+        }).then(() => window.location.href = './dashboard.html')
     }).catch(err => {
         const { error } = err.response.data
         Swal.fire({
