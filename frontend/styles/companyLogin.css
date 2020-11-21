@@ -1,0 +1,50 @@
+.card.card-login {
+    background-color: #fec771 !important;
+}
+
+.form-login .card-header .card-title {
+    color: #2c2c2c !important;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.register {
+    color: #2c2c2c !important;
+    font-weight: 600 !important;
+}
+
+.register:hover {
+    color: #fff !important;
+}
+
+.ftco-section.ftco-section-2 {
+    height: 100vh;
+}
+
+.button{
+    display: inline-flex;
+    padding: 15px 20px;
+    border: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #fff0e6;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    /* border: 1px solid #fd3535; */
+    background: #fda925;
+  }
+
+  .button:hover{
+    background: linear-gradient(147deg, #fda925 0%, #fd3535 84%);
+  }
+
+  a {
+      color: #fff !important;
+  }
+
+  a i {
+      color: #343a40;
+  }
