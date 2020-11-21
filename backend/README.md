@@ -16,7 +16,7 @@ Aplicativo de filas de estabelecimentos.
 O projeto está seguindo o padrão [standardjs](https://standardjs.com/), então recomendo que você rode o seguinte comando no terminal antes de fazer `push` ou `merge`:
 
 ```node
-yarn link:fix
+yarn lint:fix
 ```
 
 Isso irá garantir que inconsistências no código sejam resolvidas ou apontadas para correção.
