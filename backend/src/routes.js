@@ -14,7 +14,6 @@ const routes = new Router()
 routes.post('/session', wrap(SessionController.store))
 
 routes.post('/company', wrap(CompanyController.store))
-routes.get('/company/:companyId', wrap(CompanyController.get))
 
 routes.get('/queue/:queueId', wrap(QueueController.get))
 
@@ -28,6 +27,7 @@ routes.delete('/user/:userId', wrap(UserController.remove))
 routes.use(authMiddleware)
 
 /* Rotas que precisam estar autenticado com uma Company */
+routes.get('/company/:companyId', wrap(CompanyController.get))
 routes.put('/company/:companyId', wrap(CompanyController.update))
 routes.delete('/company/:companyId', wrap(CompanyController.remove))
 

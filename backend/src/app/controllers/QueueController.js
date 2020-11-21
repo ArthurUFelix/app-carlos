@@ -181,7 +181,7 @@ class QueueController {
     const { ingressCode, companyId } = req.body
 
     if (companyId !== req.companyId) {
-      return res.status(401).json({ error: 'Não é possível criar fila' })
+      return res.status(401).json({ error: 'Não foi possível criar a fila' })
     }
 
     const ingressCodeExists = await Queue.findOne({ where: { ingressCode } })
@@ -217,7 +217,14 @@ class QueueController {
 
     const id = parseInt(req.params.queueId)
 
-    const queue = await Queue.findByPk(id)
+    const queue = await Queue.findOne({
+      where: {
+        [Op.and]: [
+          { id },
+          { companyId: req.companyId }
+        ]
+      }
+    })
 
     if (!queue) {
       return res.status(404).json({ error: 'Fila não encontrada' })

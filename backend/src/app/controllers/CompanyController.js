@@ -5,6 +5,10 @@ class CompanyController {
   async get (req, res) {
     const id = parseInt(req.params.companyId)
 
+    if (id !== req.companyId) {
+      return res.status(400).json({ error: 'Perfil não encontrado' })
+    }
+
     const company = await Company.findByPk(id)
 
     if (!company) {
