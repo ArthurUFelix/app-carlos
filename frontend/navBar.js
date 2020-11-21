@@ -8,12 +8,10 @@ api.defaults.headers = {
   Authorization: `Bearer ${token}`,
 };
 
-api
-  .get(`/company/${companyId}`)
-  .then((res) => {
-    const company = res.data;
-    const companyHeader = (
-      `
+api.get(`/company/${companyId}`).then((res) => {
+  const company = res.data;
+  const companyHeader = (
+    `
       <div class="px-0 bg-warning navbar-wrap mb-2">
         <div class="container">
           <div class="row">
@@ -77,13 +75,12 @@ api
         </div>
       </div>
       `
-    );
-    document.body.insertAdjacentHTML("afterbegin", companyHeader);
-  })
-  .catch((err) => {
-    const { error } = err.response.data;
-    document.body.insertAdjacentHTML("afterbegin", error);
-  });
+  );
+  document.body.insertAdjacentHTML("afterbegin", companyHeader);
+}).catch((err) => {
+  const { error } = err.response.data;
+  document.body.insertAdjacentHTML("afterbegin", error);
+});
 
 const logout = (event) => {
   event.preventDefault();

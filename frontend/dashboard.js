@@ -119,28 +119,33 @@ api.get("/queue").then((res) => {
     (html, queue) =>
       html +
       `<div class="blog-card">
-                    <input type="radio" name="select" id="tap-1" checked>
-                    <input type="checkbox" id="imgTap">
-                    <div class="sliders">              
-                    </div>
-                    <div class="inner-part">
-                    <label for="imgTap" class="img">
-                        <img class="img-1" src="./assets/mobile.svg">
-                    </label>
-                    <div class="content content-1">
-                        <span>${formatDate(queue.startTime)}</span>
-                        <div class="text">Senha da Fila: <strong> ${queue.ingressCode
-      } </strong></div>
-                        <div class="text">Observação: ${queue.observation}</div>
-                        <div class="text">Número da fila:<strong> ${queue.id
-      } </strong></div>
-                        <button onclick="handleUserFromQueue(event, ${queue.id
-      })">Chamar o próximo! :)</button>
-                    </div>
-                    </div>
-                 </div>` +
-      `<br>`,
-    ""
+        <input type="radio" name="select" id="tap-1" checked>
+        <input type="checkbox" id="imgTap">
+        <div class="inner-part">
+          <label for="imgTap" class="img">
+            <img class="img-1" src="./assets/mobile.svg">
+          </label>
+          <div class="content content-1">
+            <div class="text">
+              Início: <strong> ${formatDate(queue.startTime)} </strong>
+            </div>
+            <div class="text">
+              Fim: <strong> ${formatDate(queue.endTime)} </strong>
+            </div>
+            <div class="text">
+              Senha da Fila: <strong> ${queue.ingressCode} </strong>
+            </div>
+            <div class="text">
+              Observação: ${queue.observation}
+            </div>
+            <div class="text">
+              Número da fila:<strong> ${queue.id} </strong>
+            </div>
+            <button onclick="handleUserFromQueue(event, ${queue.id})">Chamar o próximo! :)</button>
+          </div>
+        </div>
+      </div>
+      <br>`,''
   );
   document.body.insertAdjacentHTML("beforeEnd", queues);
 }).catch((err) => {
