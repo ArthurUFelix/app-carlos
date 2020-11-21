@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/manageQueue.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="verifyLogin.js"></script>
+    <script src="./axios.js"></script>
+    <script src="./api.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+
+    <section class="ftco-section ftco-section-2 bg-light" id="navigationTabs">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-12 mb-5 mb-md-0">
+                    <h1 class="heading-section mb-3">Administre suas filas:</h1>
+                    <div class="tabulation-2">
+                        <ul class="nav nav-pills nav-fill d-md-flex d-block">
+                            <li class="nav-item">
+                                <a class="nav-link py-3 active" data-toggle="tab" href="#home1"><span
+                                        class="ion-ios-add-circle mr-2"></span> Criar uma Fila</a>
+                            </li>
+                            <li class="nav-item px-lg-2">
+                                <a class="nav-link py-3" data-toggle="tab" href="#home2"><span
+                                        class="ion-md-create mr-2"></span> Editar uma fila</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-3" data-toggle="tab" href="#home3"><span
+                                        class="ion-md-trash mr-2"></span> Deletar uma fila</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content rounded mt-2">
+                            <div class="tab-pane container p-4 active" id="home1">
+                                <div class="teste">
+                                    <div>
+                                        <strong>Crie uma senha para sua fila:</strong>
+                                        <input type="text" id="ingressCode">
+                                        <br><br>
+                                        <strong>Observação:</strong>
+                                        <input type="text" id="observation">
+                                        <br><br>
+                                        <strong>Início da fila:</strong>
+                                        <input type="datetime-local" id="startTime">
+                                        <br><br>
+                                        <strong>Término da fila:</strong>
+                                        <input type="datetime-local" id="endTime">
+                                        <br><br>
+                                        <button class="button" type="submit" onclick="createQueue(event)">CRIAR
+                                            FILA</button>
+                                        <a class="button" href="./dashboard.html">VOLTAR</a>
+                                    </div>
+                                    <img src="./assets/create.svg" width="80%">
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane container p-4 fade" id="home2">
+                                <div class="teste">
+                                    <div>
+                                        <strong>Número da fila:</strong>
+                                        <input type="text" id="editQueueId">
+                                        <br><br>
+                                        <strong>Nova senha da fila:</strong>
+                                        <input type="text" id="editIngressCode">
+                                        <br><br>
+                                        <strong>Observação:</strong>
+                                        <input type="text" id="editObservation">
+                                        <br><br>
+                                        <strong>Início da fila:</strong>
+                                        <input type="datetime-local" id="editStartTime">
+                                        <br><br>
+                                        <strong>Término da fila:</strong>
+                                        <input type="datetime-local" id="editEndTime">
+                                        <br><br>
+                                        <button class="button" type="submit" onclick="editQueue(event)">EDITAR
+                                            FILA</button>
+                                    </div>
+                                    <img src="./assets/edit.svg" width="80%">
+                                </div>
+                            </div>
+
+                            <div class="tab-pane container p-4 fade" id="home3">
+                                <div class="teste">
+                                    <div>
+                                        <strong>Digite o NÚMERO da fila que você deseja excluir:</strong>
+                                        <input type="text" id="deleteQueueId">
+                                        <br><br>
+                                        <button class="button" type="submit" onclick="deleteQueue(event)">Deletar fila</button>
+                                    </div>
+                                    <img src="./assets/delete.svg" width="80%">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+<script src="navBar.js"></script>
+<script src="manageQueue.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate-3.0.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
+
+</html>
