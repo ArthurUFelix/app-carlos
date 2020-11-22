@@ -73,11 +73,17 @@ const handleUserFromQueue = async (event, queueId) => {
 
         api.get(`/user/${userId}`).then(res => {
           const { name, phone } = res.data
+
+          const whatsMessage = `${name}, o estabelecimento ${company.company.name} está chamando... É sua vez :)`
+
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: message,
-            html: `Nome: ${name} <br> Celular: ${phone}`,
+            html: 
+              `Nome: ${name}
+              <br>
+              <a target="_blank" href="https://wa.me/55${phone}?text=${encodeURI(whatsMessage)}">Whatsapp</a>`,
             showConfirmButton: true
           })
         }).catch(err => {
