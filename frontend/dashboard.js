@@ -82,7 +82,8 @@ const handleUserFromQueue = async (event, queueId) => {
             title: message,
             html: 
               `Nome: ${name}
-              <br>
+              <br><br>
+              Notificar cliente pelo 
               <a target="_blank" href="https://wa.me/55${phone}?text=${encodeURI(whatsMessage)}">Whatsapp</a>`,
             showConfirmButton: true
           })

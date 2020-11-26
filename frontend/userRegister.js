@@ -16,7 +16,7 @@ const register = async (event) => {
         Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'User registered',
+            title: 'Usuário cadastrado com sucesso',
             showConfirmButton: false,
             timer: 1200
         }).then(() => window.location.href = './enterQueue.html')
