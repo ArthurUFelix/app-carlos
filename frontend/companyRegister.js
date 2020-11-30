@@ -15,7 +15,7 @@ const register = async (event) => {
         Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Empresa registrada com sucesso!',
+            title: 'Empresa cadastrada com sucesso!',
             showConfirmButton: true
         }).then(() => window.location.href = './companyLogin.html')
     }).catch(err => {
