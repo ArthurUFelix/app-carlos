@@ -18,12 +18,22 @@
   "scripts": {
     "start": "nodemon src/server.js",
     "start:debug": "sucrase-node src/server.js --inspect",
-    "lint:fix": "standard --fix"
+    "lint:fix": "standard --fix",
+    "test": "mocha"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.8",
+    "@babel/core": "^7.12.9",
+    "@babel/node": "^7.12.6",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.1",
+    "chai": "^4.2.0",
+    "cypress": "^6.0.0",
+    "mocha": "^8.2.1",
     "nodemon": "^2.0.4",
     "sequelize-cli": "^6.2.0",
     "standard": "^16.0.1",
-    "sucrase": "^3.15.0"
+    "sucrase": "^3.15.0",
+    "supertest": "^6.0.1"
   }
 }
