@@ -10,7 +10,6 @@ h1 {
 h4 {
     margin: 2rem !important;
     color: #fff !important;
-    font-size: 2rem !important;
     font-family: 'Open Sans';
 }
 
@@ -29,7 +28,7 @@ h4 {
 }
 
 .button {
-    font-size: 2rem !important;
+    font-size: 1rem !important;
     margin:1rem;
 }
 
@@ -41,12 +40,11 @@ h4 {
 }
 
 .card:hover {
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 i {
-    color: #fda925 !important; 
     font-size: 4rem;
     font-weight: 600;
 }
