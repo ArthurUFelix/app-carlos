@@ -1,6 +1,5 @@
 const queueId = JSON.parse(localStorage.getItem('queueId'))
 
-
 api.get(`/user/queue/${queueId}`).then(res => {
     for (i = 0; i < res.data.length; i++) {
         const { position, userId } = res.data[i]
@@ -9,28 +8,29 @@ api.get(`/user/queue/${queueId}`).then(res => {
             const { name } = res.data
             const { phone } = res.data
             const userInfo =
-                `
-                    <div class="list-users">
+            `
+                <div class="list-users">
                     <div class="card">
-                    <div class="card-content">
-                            <div class="card-body cleartfix">
-                            <div class="media align-items-stretch">
-                                <div class="align-self-center">
-                                    <h1 class="mr-2">Posição: <strong>${position}</strong></h1>
-                                </div>
-                                <div class="media-body">
-                                    <h4>${name}</h4>
-                                </div>
-                                <div class="align-self-center">
-                                   <h4>${phone}</h4> 
+                        <div class="card-content">
+                                <div class="card-body cleartfix">
+                                <div class="media align-items-stretch">
+                                    <div class="align-self-center">
+                                        <h4 class="mr-2">Posição: <strong>${position}</strong></h4>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4>${name}</h4>
+                                    </div>
+                                    <div class="align-self-center">
+                                    <h4>${phone}</h4> 
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div> 
+                </div> 
            `
-            document.body.insertAdjacentHTML('beforeEnd', userInfo)
+            document.body.insertAdjacentHTML('beforeEnd', userInfo)   
+            
         }).catch(err => {
             const { error } = err.response.data
             Swal.fire({
@@ -43,7 +43,7 @@ api.get(`/user/queue/${queueId}`).then(res => {
             })
         })
     }
-}).catch(err => {
+    }).catch(err => {
     const { error } = err.response.data
     Swal.fire({
         position: 'top-right',
@@ -57,4 +57,5 @@ api.get(`/user/queue/${queueId}`).then(res => {
 
 const clearInfo = () => {
     localStorage.removeItem('queueId')
-}
+}    
+
