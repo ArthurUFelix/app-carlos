@@ -30,8 +30,8 @@
 .blog-card{
   position: relative;
   height: 370px;
-  width: 95%;
-  max-width: 850px;
+  width: 85%;
+  max-width: 730px;
   margin: auto;
   border-radius: 25px;
   background: white;
@@ -80,9 +80,7 @@
 }
 .content{
   padding: 0 20px 0 35px;
-  width: 530px;
-  margin-left: 50px;
-  /* opacity: 0; */
+  max-width: 530px;
   transition: .6s;
 }
 #imgTap:checked ~ .inner-part .content{
@@ -91,7 +89,6 @@
 #tap-1:checked ~ .inner-part .content-1,
 #tap-2:checked ~ .inner-part .content-2,
 #tap-3:checked ~ .inner-part .content-3{
-  /* opacity: 1; */
   margin-left: 0px;
   z-index: 100;
   transition-delay: .3s;
@@ -112,7 +109,6 @@
 .content .text{
   color: #4e4a67;
   font-size: 19px;
-  margin-bottom: 30px;
   line-height: 1.5em;
   text-align: justify;
 }
