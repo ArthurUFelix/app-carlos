@@ -1,0 +1,40 @@
+{
+  "name": "sa-2020",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.4.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.5",
+    "swagger-ui-express": "^4.1.4",
+    "yamljs": "^0.3.0",
+    "yup": "^0.29.3"
+  },
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "start:debug": "sucrase-node src/server.js --inspect",
+    "sequelize": "sequelize -i",
+    "lint:fix": "standard --fix",
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.8",
+    "@babel/core": "^7.12.9",
+    "@babel/node": "^7.12.6",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.1",
+    "chai": "^4.2.0",
+    "cypress": "^6.0.0",
+    "mocha": "^8.2.1",
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0",
+    "standard": "^16.0.1",
+    "sucrase": "^3.15.0",
+    "supertest": "^6.0.1"
+  }
+}
